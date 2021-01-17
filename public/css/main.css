@@ -1,0 +1,28 @@
+.foot {
+  background-color: grey;
+  bottom: 0;
+  text-align: center;
+}
+
+.content {
+  padding-bottom: 2rem;
+  margin-top: 4rem;
+}
+
+.title {
+  width: 100%;
+  font-size: 50px;
+  text-align: center;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

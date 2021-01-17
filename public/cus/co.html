@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <meta charset="utf-8">
+
+  <title></title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">PSMIS</span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">View orders </a>
+        </li>
+        <li class="nav-item  active">
+          <a class="nav-link" href="co.html">Create Order</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../acc.html">Manage Account</a>
+        </li>
+      </ul>
+      <span class="navbar-text" id="usrNameDisplay">Welcome, </span>
+      <ul class="navbar-nav ml-0 ml-lg-4">
+          <li class="nav-item"> <a href="../index.html" class="nav-link" id="logoutButton">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <form class="mt-4" id="login-form">
+    <div class="from-group col-md-8 mx-auto">
+      <label for="username">Order type</label>
+      <select name="cars" id="cars" form="carform">
+        <option value="Boook bidnidng">Boook bidnidng</option>
+        <option value="Poster printing">Poster printing</option>
+        <option value="st">Standard print</option>
+      </select>
+    </div>
+    <div class="from-group col-md-8 mx-auto">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" name="usrName" required />
+    </div>
+    <div class="from-group col-md-8 mx-auto">
+      <label for="myfile">Select a file:</label>
+      <input type="file" id="myfile" name="myfile">
+    </div>
+    <div class="from-group col-md-8 mx-auto mt-4">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" name="pw" required />
+    </div>
+    <div class="form-group col-md-8 mx-auto mt-5">
+      <button type="submit" class="btn btn-primary mt-4 btn-block">Submit</button>
+    </div>
+  </form>
+  <div class="container">
+    <div class="content">
+
+    </div>
+  </div>
+
+
+</body>
+<footer class="foot container-fluid">
+  &copy Poh Chee Siang 2020
+</footer>
+
+</html>
