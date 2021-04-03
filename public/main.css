@@ -1,11 +1,22 @@
+body {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.navbar {
+  flex: 0 1 auto;
+}
 
 .foot {
   background-color: grey;
   text-align: center;
+  flex: 0 1 20px;
   margin-top: 30px;
 }
 
-.content {
+.container {
+  flex: 1 1 auto;
   margin-top: 4rem;
 }
 
@@ -15,14 +26,12 @@
   text-align: center;
 }
 
-/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
