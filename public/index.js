@@ -13,16 +13,12 @@ function mainFunc() {
       .then((user) => {
         hideDialogCloseBut();
         $("#messageDialog").modal({ backdrop: "static", keyboard: false });
-        $("#messageContent").html(
-          "Login success <br> Please Wait for redirect"
-        );
+        $("#messageContent").html("Login success <br> Please Wait for redirect");
       })
       .catch((error) => {
         $("#messageDialog").modal();
         $("#messageContent").text("Login failed");
-        console.error(
-          "login error code " + error.code + " \nmessage:" + error.message
-        );
+        console.error("login error code " + error.code + " \nmessage:" + error.message);
       });
   });
 }

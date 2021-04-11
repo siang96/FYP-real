@@ -6,10 +6,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
     <script src="firebaseConfig.js"></script>
-    <link
-      rel="stylesheet"
-      href="assets/frameworks/bootstrap/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="assets/frameworks/bootstrap/bootstrap.min.css" />
     <script type="module" src="index.js"></script>
     <link rel="stylesheet" href="main.css" />
     <meta charset="utf-8" />
@@ -49,39 +46,21 @@
         <form class="mt-4" id="login-form">
           <div class="from-group col-md-8 mx-auto">
             <label for="userEmail">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              name="uEmail"
-              required
-              id="uEmail"
-            />
+            <input type="email" class="form-control" name="uEmail" required id="uEmail" />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="userPassword">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              name="pw"
-              required
-              id="uPw"
-            />
+            <input type="password" class="form-control" name="pw" required id="uPw" />
           </div>
           <div class="form-group col-md-8 mx-auto mt-5">
-            <button type="submit" class="btn btn-primary mt-4 btn-block">
-              Login
-            </button>
+            <button type="submit" class="btn btn-primary mt-4 btn-block">Login</button>
           </div>
 
           <div class="form-group col-md-8 mx-auto">
-            <button type="reset" class="btn btn-primary mt-4 btn-block">
-              Reset
-            </button>
+            <button type="reset" class="btn btn-primary mt-4 btn-block">Reset</button>
           </div>
           <div class="form-group col-md-8 mx-auto">
-            <button type="button" class="btn btn-primary mt-4 btn-block">
-              Forgot password
-            </button>
+            <a href="forgotPw" class="btn btn-primary mt-4 btn-block">Forgot password</a>
           </div>
         </form>
 
@@ -90,25 +69,13 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="messageTitle">Message</h5>
-                <button
-                  id="messageDialogCloseBut"
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
+                <button id="messageDialogCloseBut" type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body" id="messageContent"></div>
               <div class="modal-footer" id="messageDialogFooter">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
