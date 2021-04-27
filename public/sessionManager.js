@@ -8,4 +8,8 @@ function checkLoginSatus() {
   });
 }
 
-export {checkLoginSatus};
+function redirector() {
+  window.location.replace("/co");
+}
+
+export {checkLoginSatus,redirector};

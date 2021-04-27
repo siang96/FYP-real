@@ -1,5 +1,8 @@
-import { hideDialogCloseBut } from "../sharedFunction.js";
+import { redirector } from "../sessionManager.js";
+import { hideDialogCloseBut, initFire, initFireDb } from "../sharedFunction.js";
 $(document).ready(function () {
+  initFire();
+  //check if usr logged in
   mainFunc();
 });
 
@@ -41,13 +44,20 @@ function register(mail, pw) {
       var errorMessage = error.message;
       $("#messageDialog").modal();
       $("#messageContent").html("Register failed!");
-      console.error("error occured ! \ncode: " + errorCode + "\nmessage: " + errorMessage + "\nfull error: \n" + error);
+      console.error(
+        "error occured ! \ncode: " +
+          errorCode +
+          "\nmessage: " +
+          errorMessage +
+          "\nfull error: \n" +
+          error
+      );
     });
 }
 
 function initalUsr(user) {
-  var nameAdd, contactAdd;
-  var fireDB = firebase.firestore();
+  var nameAdd, contactAdd,fireDB;
+  fireDB=initFireDb();
   nameAdd = $("#usrName").val();
   contactAdd = $("#usrContactNum").val();
   var newUsrData = {
@@ -64,6 +74,7 @@ function initalUsr(user) {
       $("#messageDialog").modal({ backdrop: "static", keyboard: false });
       $("#messageContent").html("Register success <br> Please Wait for Login");
       //redirect here
+      redirector();
     })
     .catch((error) => {
       $("#messageDialog").modal();
