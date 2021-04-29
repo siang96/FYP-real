@@ -1,8 +1,8 @@
-import { redirector } from "../sessionManager.js";
+import { checkLoginSatus, getProfile, redirector } from "../sessionManager.js";
 import { hideDialogCloseBut, initFire, initFireDb } from "../sharedFunction.js";
 $(document).ready(function () {
   initFire();
-  //check if usr logged in
+  checkLoginSatus();
   mainFunc();
 });
 
@@ -69,12 +69,12 @@ function initalUsr(user) {
     .collection("user")
     .doc(user.uid)
     .set(newUsrData)
-    .then(() => {
+    .then(async function() {
       hideDialogCloseBut();
       $("#messageDialog").modal({ backdrop: "static", keyboard: false });
       $("#messageContent").html("Register success <br> Please Wait for Login");
-      //redirect here
-      redirector();
+      var profile= await getProfile(user.uid);
+      redirector(profile);
     })
     .catch((error) => {
       $("#messageDialog").modal();

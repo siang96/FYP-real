@@ -1,8 +1,8 @@
 import { hideDialogCloseBut, initFire } from "./sharedFunction.js";
-import { redirector } from "./sessionManager.js";
+import { checkLoginSatus, redirector,getProfile } from "./sessionManager.js";
 $(document).ready(function () {  
   initFire();
-  //check if usr logged in
+  checkLoginSatus();
   mainFunc();
 });
 
@@ -15,12 +15,12 @@ function mainFunc() {
     firebase
       .auth()
       .signInWithEmailAndPassword(uEmail, uPw)
-      .then((user) => {
+      .then(async function(user){
         hideDialogCloseBut();
         $("#messageDialog").modal({ backdrop: "static", keyboard: false });
         $("#messageContent").html("Login success <br> Please Wait for redirect");
-        //redirect func
-        redirector();
+        var profile=await getProfile(user.id);
+        redirector(profile);        
       })
       .catch((error) => {
         $("#messageDialog").modal();
