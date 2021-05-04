@@ -9,23 +9,26 @@ function checkLoginSatus() {
     if (user) {
       var uidPass = user.uid;
       var profileGot = await getProfile(uidPass);
-      $("#messageDialog").modal("hide");
       if (
         currPage == "/" ||
-        currPage == "/register/" ||
+        currPage.match(/register/gi) ||
         currPage == "/index.html"
       ) {
+        $("#messageContent").html("Logged in and redirecting");
         setTimeout(() => {
           redirector(profileGot);
-        }, 500);
+        }, 800);
       } else {
         accessRedirector(profileGot);
         profileSetter(profileGot);
+        setTimeout(() => {
+          $("#messageDialog").modal("hide");
+        }, 1000);
       }
     } else {
       if (
         currPage != "/" &&
-        currPage != "/register/" &&
+        !currPage.match(/register/gi) &&
         currPage != "/index.html"
       ) {
         if (isSignOut != true) {
@@ -33,46 +36,50 @@ function checkLoginSatus() {
         }
         setTimeout(() => {
           window.location.replace("/");
-        }, 3000);
+        }, 800);
       } else {
-        $("#messageDialog").on("shown.bs.modal", function (event) {
-          setTimeout(() => {
-            $("#messageDialog").modal("hide");
-          }, 1000);
-        });
+        setTimeout(() => {
+          $("#messageDialog").modal("hide");
+        }, 1000);
       }
     }
   });
 }
 
 function accessRedirector(uProfile) {
+  $("#messageContent").html("Verifying");
   if (uProfile.usrType == "admin") {
-    if (currPage == "/orderViewer" || currPage == "/relog") {
+    if (currPage.match(/orderViewer/gi) || currPage.match(/relogger/gi)) {
+      $("#messageContent").html("You're not supposed here<br>Redirecting");
       setTimeout(() => {
         redirector(uProfile);
-      }, 3000);
+      }, 800);
     }
   }
   if (uProfile.usrType == "staff") {
     if (
-      currPage == "/orderViewer" ||
-      currPage == "/um" ||
-      currPage == "/rept"
+      currPage.match(/orderViewer/gi) ||
+      currPage.match(/userManager/gi) ||
+      currPage.match(/report/gi) ||
+      currPage.match(/relogger/gi)
     ) {
+      $("#messageContent").html("You're not supposed here<br>Redirecting");
       setTimeout(() => {
         redirector(uProfile);
-      }, 3000);
+      }, 800);
     }
   }
   if (uProfile.usrType == "cust") {
     if (
-      currPage == "/orderManager" ||
-      currPage == "/um" ||
-      currPage == "/rept"
+      currPage.match(/orderManager/gi) ||
+      currPage.match(/userManager/gi) ||
+      currPage.match(/report/gi) ||
+      currPage.match(/relogger/gi)
     ) {
+      $("#messageContent").html("You're not supposed here<br>Redirecting");
       setTimeout(() => {
         redirector(uProfile);
-      }, 3000);
+      }, 800);
     }
   }
 }
@@ -110,7 +117,7 @@ function signOut() {
       isSignOut = true;
     })
     .catch((error) => {
-      // An error happened.
+      console.error("unable to signout");
     });
 }
 
@@ -130,4 +137,4 @@ async function getProfile(uid) {
   }
 }
 
-export { checkLoginSatus, redirector, signOut, getProfile };
+export { checkLoginSatus, signOut };

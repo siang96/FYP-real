@@ -1,4 +1,4 @@
-import { checkLoginSatus, getProfile, redirector } from "../sessionManager.js";
+import { checkLoginSatus } from "../sessionManager.js";
 import { hideDialogCloseBut, initFire, initFireDb } from "../sharedFunction.js";
 $(document).ready(function () {
   initFire();
