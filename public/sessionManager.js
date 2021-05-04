@@ -3,34 +3,41 @@ import { initFireDb } from "./sharedFunction.js";
 function checkLoginSatus() {
   firebase.auth().onAuthStateChanged(async function (user) {
     var currPage = window.location.pathname;
-    if (user) {      
+    if (user) {
       var uidPass = user.uid;
-      console.log(uidPass);
       var profileGot = await getProfile(uidPass);
-      console.log(currPage);
-      if ((currPage == "/") ||( currPage == "/register/")||(currPage=="/index.html")) {
+      if (
+        currPage == "/" ||
+        currPage == "/register/" ||
+        currPage == "/index.html"
+      ) {
         redirector(profileGot);
-      }
-      else{
+      } else {
+        //addtional access level redirector
         profileSetter(profileGot);
       }
     } else {
-      window.location.replace("/");
+      if (
+        currPage != "/" &&
+        currPage != "/register/" &&
+        currPage != "/index.html"
+      ) {
+        window.location.replace("/");
+      }
     }
   });
 }
 
 function profileSetter(uProfile) {
-  // var welTextDiv = document.getElementById("usrNameDisplay");
-  // welTextDiv.innerHTML += profileGot.name;
-  console.log("hi fromsetter");
+  var welTextDiv = document.getElementById("usrNameDisplay");
+  welTextDiv.innerHTML += uProfile.name;
+  //add nav controls
 }
 
 function redirector(uProfile) {
   if (uProfile.usrType == "cust") {
     window.location.replace("/viewAndUp");
-  }
-  else{
+  } else {
     window.location.replace("/orderManager");
   }
 }
@@ -40,8 +47,9 @@ function signOut() {
     .auth()
     .signOut()
     .then(() => {
-      // Sign-out successful.
-      window.location.replace("/");
+      hideDialogCloseBut();
+      $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+      $("#messageContent").html("Logout success <br> Please Wait for redirect");
     })
     .catch((error) => {
       // An error happened.
@@ -57,7 +65,7 @@ async function getProfile(uid) {
     if (profileDoc.exists) {
       return profileDoc.data();
     } else {
-      console.log("profile not exists");
+      console.error("profile not exists");
     }
   } catch (error) {
     console.error("got error: " + err);

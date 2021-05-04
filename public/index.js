@@ -18,9 +18,7 @@ function mainFunc() {
       .then(async function(user){
         hideDialogCloseBut();
         $("#messageDialog").modal({ backdrop: "static", keyboard: false });
-        $("#messageContent").html("Login success <br> Please Wait for redirect");
-        var profile=await getProfile(user.id);
-        redirector(profile);        
+        $("#messageContent").html("Login success <br> Please Wait for redirect");    
       })
       .catch((error) => {
         $("#messageDialog").modal();

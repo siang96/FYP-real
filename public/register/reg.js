@@ -73,8 +73,6 @@ function initalUsr(user) {
       hideDialogCloseBut();
       $("#messageDialog").modal({ backdrop: "static", keyboard: false });
       $("#messageContent").html("Register success <br> Please Wait for Login");
-      var profile= await getProfile(user.uid);
-      redirector(profile);
     })
     .catch((error) => {
       $("#messageDialog").modal();

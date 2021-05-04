@@ -1,92 +1,128 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+  <head>
+    <script src="../assets/frameworks/jQuery/jquery-3.5.1.min.js"></script>
+    <script src="../assets/frameworks/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../assets/frameworks/DataTables/datatables.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
 
-<head>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.21/b-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.css" />
+    <link
+      rel="stylesheet"
+      href="../assets/frameworks/DataTables/datatables.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../assets/frameworks/bootstrap/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../main.css" />
+    <script type="module" src="./om.js"></script>
+    <meta charset="utf-8" />
+    <title>Manage orders</title>
+    <link rel="icon" type="image/ico" sizes="16x16" href="../favicon.ico" />
 
-  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.21/b-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.js"></script>
+    <title></title>
+  </head>
 
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <span class="navbar-brand mb-0 h1">PSMIS</span>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Manage orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="um.html">Manage users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../acc.html">Manage Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="rept.html">Reports</a>
+          </li>
+        </ul>
+        <span class="navbar-text" id="usrNameDisplay">Welcome, </span>
+        <ul class="navbar-nav ml-0 ml-lg-4">
+          <li class="nav-item">
+            <a href="#" class="nav-link" id="logoutButton">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-  <link rel="stylesheet" href="../css/main.css">
-  <script type="text/javascript" src="../js/table.js"></script>
-  <meta charset="utf-8">
-
-  <title></title>
-</head>
-
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <span class="navbar-brand mb-0 h1">PSMIS</span>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="index.html">Manage orders</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="um.html">Manage users</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../acc.html">Manage Account</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="rept.html">Reports</a>
-        </li>
-      </ul>
-      <span class="navbar-text" id="usrNameDisplay">Welcome, </span>
-      <ul class="navbar-nav ml-0 ml-lg-4">
-          <li class="nav-item"> <a href="#" class="nav-link" id="logoutButton">Logout</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <div class="container">
-    <div class="content">
-      <table id="myTable" class="table">
-        <thead>
-          <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
-            <th>Column 3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Row 1 Data 1</td>
-            <td>Row 1 Data 2</td>
-            <td>Row 1 Data 3</td>
-          </tr>
-          <tr>
-            <td>Row 2 Data 1</td>
-            <td>Row 2 Data 2</td>
-            <td>Row 2 Data 3</td>
-          </tr>
-          <tr>
-            <td>Row 3 Data 1</td>
-            <td>Row 3 Data 2</td>
-            <td>Row 3 Data 3</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="row mx-auto mt-4">
-          <button type="button" class="btn btn-primary col-lg-2 mx-auto" id="viewBut">View</button>
-          <button type="button" class="btn btn-primary col-lg-2 mx-auto" id="newBut">New</button>
-          <button type="button" class="btn btn-primary col-lg-2 mx-auto" id="editBut">Edit</button>
-          <button type="button" class="btn btn-primary col-lg-2 mx-auto" id="rmBut">Remove</button>
+    <div class="container">
+      <div class="content">
+        <table id="myTable" class="table">
+          <thead>
+            <tr>
+              <th>Column 1</th>
+              <th>Column 2</th>
+              <th>Column 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1 Data 1</td>
+              <td>Row 1 Data 2</td>
+              <td>Row 1 Data 3</td>
+            </tr>
+            <tr>
+              <td>Row 2 Data 1</td>
+              <td>Row 2 Data 2</td>
+              <td>Row 2 Data 3</td>
+            </tr>
+            <tr>
+              <td>Row 3 Data 1</td>
+              <td>Row 3 Data 2</td>
+              <td>Row 3 Data 3</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row mx-auto mt-4">
+          <button
+            type="button"
+            class="btn btn-primary col-lg-2 mx-auto"
+            id="viewBut"
+          >
+            View
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary col-lg-2 mx-auto"
+            id="newBut"
+          >
+            New
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary col-lg-2 mx-auto"
+            id="editBut"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary col-lg-2 mx-auto"
+            id="rmBut"
+          >
+            Remove
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-
-
-</body>
-<footer class="foot container-fluid">
-  &copy Poh Chee Siang 2020
-</footer>
-
+  </body>
+  <footer class="foot container-fluid">&copy Poh Chee Siang 2020</footer>
 </html>
