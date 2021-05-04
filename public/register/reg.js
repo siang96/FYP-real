@@ -46,7 +46,6 @@ function register(mail, pw) {
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
-      $("#messageDialog").modal();
       $("#messageContent").html("Register failed!");
       console.error(
         "error occured ! \ncode: " +
@@ -77,7 +76,6 @@ function initalUsr(user) {
       $("#messageContent").html("Register success <br> Please Wait for Login");
     })
     .catch((error) => {
-      $("#messageDialog").modal();
       $("#messageContent").html("Register failed!");
       console.error("error occured ! \nfull error: \n" + error);
     });

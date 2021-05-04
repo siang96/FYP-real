@@ -29,7 +29,6 @@ function initFire() {
     messagingSenderId: "444178708470",
     appId: "1:444178708470:web:777d2c0bf38e6b84a1b9d7",
   };
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 }
 

@@ -1,12 +1,11 @@
 import { hideDialogCloseBut, initFireDb } from "./sharedFunction.js";
-let isSignOut=false;
-
+let isSignOut = false;
+let currPage = window.location.pathname;
 function checkLoginSatus() {
   hideDialogCloseBut();
   $("#messageDialog").modal({ backdrop: "static", keyboard: false });
   $("#messageContent").html("Loading");
   firebase.auth().onAuthStateChanged(async function (user) {
-    var currPage = window.location.pathname;
     if (user) {
       var uidPass = user.uid;
       var profileGot = await getProfile(uidPass);
@@ -20,7 +19,7 @@ function checkLoginSatus() {
           redirector(profileGot);
         }, 500);
       } else {
-        //addtional access level redirector
+        accessRedirector(profileGot);
         profileSetter(profileGot);
       }
     } else {
@@ -46,6 +45,38 @@ function checkLoginSatus() {
   });
 }
 
+function accessRedirector(uProfile) {
+  if (uProfile.usrType == "admin") {
+    if (currPage == "/orderViewer" || currPage == "/relog") {
+      setTimeout(() => {
+        redirector(uProfile);
+      }, 3000);
+    }
+  }
+  if (uProfile.usrType == "staff") {
+    if (
+      currPage == "/orderViewer" ||
+      currPage == "/um" ||
+      currPage == "/rept"
+    ) {
+      setTimeout(() => {
+        redirector(uProfile);
+      }, 3000);
+    }
+  }
+  if (uProfile.usrType == "cust") {
+    if (
+      currPage == "/orderManager" ||
+      currPage == "/um" ||
+      currPage == "/rept"
+    ) {
+      setTimeout(() => {
+        redirector(uProfile);
+      }, 3000);
+    }
+  }
+}
+
 function profileSetter(uProfile) {
   var welTextDiv = document.getElementById("usrNameDisplay");
   welTextDiv.innerHTML += uProfile.name;
@@ -62,7 +93,7 @@ function profileSetter(uProfile) {
 
 function redirector(uProfile) {
   if (uProfile.usrType == "cust") {
-    window.location.replace("/viewAndUp");
+    window.location.replace("/orderViewer");
   } else {
     window.location.replace("/orderManager");
   }
@@ -76,7 +107,7 @@ function signOut() {
       hideDialogCloseBut();
       $("#messageDialog").modal({ backdrop: "static", keyboard: false });
       $("#messageContent").html("Loging out <br> Please Wait for redirect");
-      isSignOut=true;
+      isSignOut = true;
     })
     .catch((error) => {
       // An error happened.
