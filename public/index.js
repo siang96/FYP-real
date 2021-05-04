@@ -9,15 +9,18 @@ $(document).ready(function () {
 function mainFunc() {
   var uEmail, uPw;
   $("#login-form").submit(function (event) {
+    
+    hideDialogCloseBut();
+    $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+    
+    $("#messageContent").html("Logging in");   
     event.preventDefault();
     uEmail = $("#uEmail").val();
     uPw = $("#uPw").val();
     firebase
       .auth()
       .signInWithEmailAndPassword(uEmail, uPw)
-      .then(async function(user){
-        hideDialogCloseBut();
-        $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+      .then(function(user){
         $("#messageContent").html("Login success <br> Please Wait for redirect");    
       })
       .catch((error) => {

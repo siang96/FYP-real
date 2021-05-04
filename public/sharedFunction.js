@@ -13,6 +13,11 @@ function hideDialogCloseBut() {
   $("#messageDialogFooter").hide();
 }
 
+function showDialogCloseBut() {
+  $("#messageDialogCloseBut").show();
+  $("#messageDialogFooter").show();
+}
+
 function initFire() {
   var firebaseConfig = {
     apiKey: "AIzaSyClxeFYJNbZFSnvrigNumSDqIDNnAbI-xI",
@@ -32,4 +37,4 @@ function initFireDb() {
   return firebase.firestore();
 }
 
-export { intitDatatables, hideDialogCloseBut, initFire, initFireDb };
+export { intitDatatables, hideDialogCloseBut, initFire, initFireDb,showDialogCloseBut };

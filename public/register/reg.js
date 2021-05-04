@@ -33,6 +33,10 @@ function validPw() {
 }
 
 function register(mail, pw) {
+  
+  hideDialogCloseBut();
+  $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+  $("#messageContent").html("Registering");   
   firebase
     .auth()
     .createUserWithEmailAndPassword(mail, pw)
@@ -69,9 +73,7 @@ function initalUsr(user) {
     .collection("user")
     .doc(user.uid)
     .set(newUsrData)
-    .then(async function() {
-      hideDialogCloseBut();
-      $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+    .then(function() {
       $("#messageContent").html("Register success <br> Please Wait for Login");
     })
     .catch((error) => {

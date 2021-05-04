@@ -48,7 +48,7 @@
             <a class="nav-link" href="um.html">Manage users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../acc.html">Manage Account</a>
+            <a class="nav-link" href="../acc/">Manage Account</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="rept.html">Reports</a>
@@ -120,6 +120,34 @@
           >
             Remove
           </button>
+        </div>
+      </div>
+      <div class="modal fade" id="messageDialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="messageTitle">Message</h5>
+              <button
+                id="messageDialogCloseBut"
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="messageContent"></div>
+            <div class="modal-footer" id="messageDialogFooter">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
