@@ -6,6 +6,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/short-unique-id@latest/dist/short-unique-id.min.js"></script>
     <link
       rel="stylesheet"
       href="../assets/frameworks/bootstrap/bootstrap.min.css"
@@ -33,14 +34,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">View orders </a>
-          </li>
           <li class="nav-item active">
-            <a class="nav-link" href="co.html">Create Order</a>
+            <a class="nav-link" href="./">Manage Account </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../acc.html">Manage Account</a>
+            <a class="nav-link" href="#">Create Order</a>
+          </li>
+          <li class="nav-item" id="orderManageLink">
+            <a class="nav-link" href="../orderManager/">Manage Order</a>
+          </li>
+          <li class="nav-item" id="viewAndUpLink">
+            <a class="nav-link" href="../orderViewer/">View orders</a>
+          </li>
+          <li class="nav-item" id="reptLink">
+            <a class="nav-link" href="#">Reports</a>
+          </li>
+          <li class="nav-item" id="userManageLink">
+            <a class="nav-link" href="#">Manage Users</a>
           </li>
         </ul>
         <span class="navbar-text" id="usrNameDisplay">Welcome, </span>
@@ -57,20 +67,58 @@
     <div class="container">
       <div class="content">
         <form class="mt-4" id="login-form">
-          <div class="input-group col-md-8 mx-auto">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="inputGroupSelect01"
-                >Select a Service...</label
-              >
+          <!-- form basic info input -->
+          <div class="form-group">
+            <div class="input-group col-md-10 mx-auto">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="formOption"
+                  >Select a Service...</label
+                >
+              </div>
+              <select class="custom-select" id="formOption">
+                <option disabled selected>Choose...</option>
+                <option value="Flyers">Flyers</option>
+                <option value="Hardcover">Hardcover</option>
+                <option value="nameTag">Name Tag</option>
+                <option value="banner">Baners &amp; bunting</option>
+              </select>
             </div>
-            <select  class="custom-select" id="inputGroupSelect01">
-              <option selected>Choose...</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
+          </div>
+          <div id="formArea" class="mt-4 col-md-10 mx-auto"></div>
+          <div class="form-group col-md-10 d-flex justify-content-end mx-auto">
+            <button type="button" class="btn btn-primary btn-lg">
+              Submit
+            </button>
           </div>
         </form>
+        <div class="modal fade" id="messageDialog" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="messageTitle">Message</h5>
+                <button
+                  id="messageDialogCloseBut"
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="messageContent"></div>
+              <div class="modal-footer" id="messageDialogFooter">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

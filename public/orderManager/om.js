@@ -1,9 +1,9 @@
-import { checkLoginSatus, signOut } from "../sessionManager.js";
+import { initSession, signOut } from "../sessionManager.js";
 import { initFire, intitDatatables } from "../sharedFunction.js";
 
 $(document).ready(function () {
     initFire();
-    checkLoginSatus();
+    initSession();
     intitDatatables();
     main();
 });

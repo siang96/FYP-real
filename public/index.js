@@ -1,8 +1,8 @@
 import { hideDialogCloseBut, initFire } from "./sharedFunction.js";
-import { checkLoginSatus } from "./sessionManager.js";
+import { initSession } from "./sessionManager.js";
 $(document).ready(function () {
   initFire();
-  checkLoginSatus();
+  initSession();
   mainFunc();
 });
 

@@ -1,7 +1,7 @@
 import { hideDialogCloseBut, initFireDb } from "./sharedFunction.js";
 let isSignOut = false;
 let currPage = window.location.pathname;
-function checkLoginSatus() {
+function initSession() {
   hideDialogCloseBut();
   $("#messageDialog").modal({ backdrop: "static", keyboard: false });
   $("#messageContent").html("Loading");
@@ -137,4 +137,4 @@ async function getProfile(uid) {
   }
 }
 
-export { checkLoginSatus, signOut };
+export { initSession, signOut, getProfile };
