@@ -1,3 +1,48 @@
-<div class="form-group">
-    hi this is flyer
+<div class="row">
+  <div class="form-group col-md-6">
+    <label for="paperType">Select paper type</label>
+    <select class="form-control" name="orderPaperType" id="orderPaperType" required>
+      <option disabled selected>Choose...</option>
+      <option value="similiPaper">Simili Paper</option>
+      <option value="artPaper">Art Paper</option>
+    </select>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="">Select paper size</label>
+    <select class="form-control" name="orderPaperSize" id="orderPaperSize" required>
+      <option disabled selected>Choose...</option>
+      <option value="A4">A4</option>
+      <option value="A5">A5</option>
+    </select>
+  </div>
+</div>
+<div class="row ml-auto">
+  <div class="form-check">
+    <label class="form-check-label">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        name="orderDoubleSide"
+        id=""
+      />
+      Double side
+    </label>
+  </div>
+  <div class="form-check ml-2">
+    <label class="form-check-label">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        name="orderDesignService"
+        id="orderDesignService"
+      />
+      Design Service
+    </label>
+  </div>
+</div>
+<div class="row ml-auto mt-3" id="orderFileArea">
+  <div class="form-group">
+    <label for="orderFile">Select File</label>
+    <input type="file" class="form-control-file" name="orderFile" id="orderFile"/>
+  </div>
 </div>

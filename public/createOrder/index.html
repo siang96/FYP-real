@@ -6,7 +6,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/short-unique-id@latest/dist/short-unique-id.min.js"></script>
     <link
       rel="stylesheet"
       href="../assets/frameworks/bootstrap/bootstrap.min.css"
@@ -35,10 +34,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="./">Manage Account </a>
+            <a class="nav-link" href="#">Create Order</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Create Order</a>
+            <a class="nav-link" href="./">Manage Account </a>
           </li>
           <li class="nav-item" id="orderManageLink">
             <a class="nav-link" href="../orderManager/">Manage Order</a>
@@ -66,8 +65,7 @@
 
     <div class="container">
       <div class="content">
-        <form class="mt-4" id="login-form">
-          <!-- form basic info input -->
+        <form class="mt-4" id="order-form">
           <div class="form-group">
             <div class="input-group col-md-10 mx-auto">
               <div class="input-group-prepend">
@@ -79,14 +77,19 @@
                 <option disabled selected>Choose...</option>
                 <option value="Flyers">Flyers</option>
                 <option value="Hardcover">Hardcover</option>
-                <option value="nameTag">Name Tag</option>
+                <option value="businessCard">Business Card</option>
                 <option value="banner">Baners &amp; bunting</option>
               </select>
             </div>
           </div>
-          <div id="formArea" class="mt-4 col-md-10 mx-auto"></div>
+          <div id="personalInfoArea" class="mt-4 col-md-10 mx-auto"></div>
+          <div id="orderAddInfoArea" class="col-md-10 mx-auto"></div>
           <div class="form-group col-md-10 d-flex justify-content-end mx-auto">
-            <button type="button" class="btn btn-primary btn-lg">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              id="submitButton"
+            >
               Submit
             </button>
           </div>
