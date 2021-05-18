@@ -36,4 +36,10 @@ function initFireDb() {
   return firebase.firestore();
 }
 
-export { intitDatatables, hideDialogCloseBut, initFire, initFireDb,showDialogCloseBut };
+export {
+  intitDatatables,
+  hideDialogCloseBut,
+  initFire,
+  initFireDb,
+  showDialogCloseBut,
+};

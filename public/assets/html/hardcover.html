@@ -1,3 +1,38 @@
-<div>
-    hi this is hard
+<div class="row">
+  <div class="form-group col-md-6">
+    <label for="hardMaterial">Choose Material</label>
+    <select class="form-control" name="hardMaterial" id="hardMaterial" required>
+      <option disabled selected value="">Choose...</option>
+      <option value="buckram">Buckram</option>
+      <option value="arcylic">Arcylic</option>
+    </select>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="hardColor">Choose color</label>
+    <select class="form-control" name="hardColor" id="hardColor" required>
+      <option disabled selected>Select material first</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">Please add the following into your file</div>
+  <ul>
+      <li>Cover (required)</li>
+      <li>Spine (required)</li>
+      <li>Document (required)</li>
+      <li>Logo (RM5/optional)</li>
+      <li>Format instrutions (optional)</li>
+      
+  </ul>
+</div>
+<div class="row ml-auto mt-3" id="orderFileArea">
+  <div class="form-group">
+    <label for="orderFile">Select File</label>
+    <input
+      type="file"
+      class="form-control-file"
+      name="orderFile"
+      id="orderFile"
+    />
+  </div>
 </div>

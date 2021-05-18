@@ -137,4 +137,11 @@ async function getProfile(uid) {
   }
 }
 
-export { initSession, signOut, getProfile };
+function getUid() {
+  var currUser = firebase.auth().currentUser;
+  if (currUser) {
+    return currUser.uid;
+  }
+}
+
+export { initSession, signOut, getProfile, getUid, redirector };
