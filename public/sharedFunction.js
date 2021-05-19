@@ -1,13 +1,3 @@
-function intitDatatables() {
-  var dataTableOption = {
-    paging: false,
-    ordering: false,
-    info: false,
-    select: "single",
-  };
-  var theTable = $("#dataTable").DataTable(dataTableOption);
-}
-
 function hideDialogCloseBut() {
   $("#messageDialogCloseBut").hide();
   $("#messageDialogFooter").hide();
@@ -37,7 +27,6 @@ function initFireDb() {
 }
 
 export {
-  intitDatatables,
   hideDialogCloseBut,
   initFire,
   initFireDb,

@@ -1,9 +1,4 @@
-import {
-  getProfile,
-  getUid,
-  initSession,
-  redirector,
-} from "../sessionManager.js";
+import { getProfile, getUid, initSession } from "../sessionManager.js";
 import { initFire, initFireDb } from "../sharedFunction.js";
 import { customAlphabet } from "../assets/frameworks/nanoid.js";
 

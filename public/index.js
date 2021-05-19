@@ -1,4 +1,4 @@
-import { hideDialogCloseBut, initFire } from "./sharedFunction.js";
+import { hideDialogCloseBut, initFire, showDialogCloseBut } from "./sharedFunction.js";
 import { initSession } from "./sessionManager.js";
 $(document).ready(function () {
   initFire();
@@ -24,6 +24,7 @@ function mainFunc() {
         );
       })
       .catch((error) => {
+        showDialogCloseBut();
         $("#messageContent").html("Login failed");
         console.error(
           "login error code " + error.code + " \nmessage:" + error.message
