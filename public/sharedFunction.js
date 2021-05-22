@@ -26,9 +26,30 @@ function initFireDb() {
   return firebase.firestore();
 }
 
-export {
-  hideDialogCloseBut,
-  initFire,
-  initFireDb,
-  showDialogCloseBut,
-};
+function loadForm(/*id,functype*/) {
+  //get doc(id)
+  //load form in message content
+  // =>load select box
+  //=>load personal info
+  //=>load form based value
+  //=>load add detail
+  //bind events
+  //hide orderfile area
+  //set value(doc)
+  //if (functype) is view, load downlad but,bind
+  //=>set input disabled
+  //if (functype) is edit, show orderfile area bind show submit but
+  //=> delete replace file on submit
+  
+}
+
+function setFormValue(/*doc */) {
+  //sets val(doc)
+}
+
+function cancelOrder() {
+  //load confirm
+  //bind confirm
+}
+
+export { hideDialogCloseBut, initFire, initFireDb, showDialogCloseBut };

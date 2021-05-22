@@ -95,8 +95,8 @@ function main() {
       paymentId: "",
       orderDate: orderDate,
       orderEstPrice: "",
-      orderStatus: "",
-      paymentstat: "",
+      orderStatus: "Order Placed",
+      paymentstat: "Not Paid",
       deisgnServiceStatus: "",
       problem: "",
     };
@@ -132,11 +132,11 @@ function main() {
           uploadFile();
           $("#progressBarArea").show();
         } else {
-          $("#messageContent").html("Success! Please Wait for refresh");
+          $("#messageContent").html("Success!<br>Your order id "+orderId+"<br>Please Wait for refresh");
           $("#messageDialog").modal({ backdrop: "static", keyboard: false });
           setTimeout(() => {
             location.reload();
-          }, 1000);
+          }, 5000);
         }
       })
       .catch((error) => {
@@ -208,10 +208,10 @@ function uploadFile() {
       console.error("upload error! " + err);
     },
     function complete() {
-      $("#progressMessage").html("Complete! Please Wait for refresh");
+      $("#progressMessage").html("Complete! Your order id is "+orderId+" Please Wait for refresh");
       setTimeout(() => {
         location.reload();
-      }, 1000);
+      }, 5000);
     }
   );
 }
@@ -235,4 +235,12 @@ async function fillPersonalInfo() {
   $("#OrderName").val(userProfile.name);
   $("#orderContactMail").val(userProfileSys.email);
   $("#orderContactNum").val(userProfile.contactNum);
+}
+
+
+export {
+  bindHardEvent,
+  uploadFile,
+  bindBusinessCard,
+  revertQtyText
 }

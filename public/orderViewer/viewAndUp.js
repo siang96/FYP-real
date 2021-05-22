@@ -20,8 +20,8 @@ function main() {
   loadOrders();
 }
 
-function viewOrder(params) {
-  //double message diaglog
+function viewOrder() {
+  //load from(id,functype)
 }
 
 function loadOrders() {
@@ -62,9 +62,21 @@ function loadTable(recieveData) {
   };
   var theTable = $("#dataTable").DataTable(dataTableOption);
   tableListner(theTable);
+  theTable
+    .on("select", function (e, dt, type, indexes) {
+      //add listner if select enable/disable button
+      $("#viewBut").prop("disabled", false);
+      $("#editBut").prop("disabled", false);
+      $("#payBut").prop("disabled", false);
+      $("#rmBut").prop("disabled", false);
+    })
+    .on("deselect", function (e, dt, type, indexes) {
+      $("#viewBut").prop("disabled", true);
+      $("#editBut").prop("disabled", true);
+      $("#payBut").prop("disabled", true);
+      $("#rmBut").prop("disabled", true);
+    });
   //bind event
-
-  //add listner if select enable/disable button
 }
 
 function tableListner(refTable) {
@@ -78,7 +90,7 @@ function tableListner(refTable) {
     .onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {
         numChange++;
-        if(numChange>numRows){
+        if (numChange > numRows) {
           location.reload();
         }
       });
