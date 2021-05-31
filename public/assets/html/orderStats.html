@@ -1,1 +1,95 @@
-<!-- addinfos load in view but -->
+<div class="row">
+  <div class="form-group col-md-6 mx-auto">
+    <label for="orderDate">Time placed</label>
+    <input
+      type="datetime-local"
+      class="form-control"
+      name="orderDate"
+      id="orderDate"
+      required
+    />
+  </div>
+  <div class="form-group col-md-6 mx-auto">
+    <label for="orderEstPrice">Estimated price (RM)</label>
+    <input
+      type="text"
+      class="form-control"
+      name="orderEstPrice"
+      id="orderEstPrice"
+      required
+    />
+  </div>
+</div>
+<div class="row">
+  <div class="form-group col-md-12 mx-auto">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="orderStatus">Order Status</label>
+      </div>
+      <select class="custom-select" id="orderStatus" name="orderStatus" required>
+        <option disabled selected value="">Choose...</option>
+        <option value="Order placed">Order placed</option>
+        <option value="Order confirmed">Order Confirmed</option>
+        <option value="Problem occuured">Problem occuured</option>
+        <option value="Estimating price">Estimating Price</option>
+        <option value="Order price confirmed">Order price confirmed</option>
+        <option value="Waiting payment">Waiting payment</option>
+        <option value="Payment confirmed">Payment confirmed</option>
+        <option value="Producing order">Producing order</option>
+        <option value="Order ready to pickup">Order ready to pickup</option>
+        <option value="Order cancelation requested">
+          Order cancelation requested
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="form-group col-md-12 mx-auto">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="deisgnServiceStatus"
+          >Design Service Status</label
+        >
+      </div>
+      <select
+        class="custom-select"
+        id="deisgnServiceStatus"
+        name="deisgnServiceStatus"
+        required
+      >
+        <option disabled selected value="">Choose...</option>
+        <option value="Not Requested">Not Requested</option>
+        <option value="Service requested">Service requested</option>
+        <option value="Waiting for deisgner contact">
+          Waiting for deisgner contact
+        </option>
+        <option value="Unable to reach contact">Unable to reach contact</option>
+        <option value="Design confirmed">Design confirmed</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="form-group col-md-12 mx-auto">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="paymentstat">Payment Status</label>
+      </div>
+      <select class="custom-select" id="paymentstat" name="paymentstat" required>
+        <option disabled selected value="">Choose...</option>
+        <option value="Not paid">Not Paid</option>
+        <option value="Paid by cash">Paid by cash</option>
+        <option value="Paid online success">Paid online success</option>
+        <option value="Paid online failed">Paid online failed</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="form-group col-md-12">
+    <label for="problem">Problems</label>
+    <textarea class="form-control" name="problems" id="problem" rows="3"></textarea>
+  </div>
+</div>

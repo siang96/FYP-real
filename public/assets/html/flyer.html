@@ -1,15 +1,25 @@
 <div class="row">
   <div class="form-group col-md-6">
     <label for="paperType">Select paper type</label>
-    <select class="form-control" name="orderPaperType" id="orderPaperType" required>
+    <select
+      class="form-control"
+      name="orderPaperType"
+      id="orderPaperType"
+      required
+    >
       <option disabled selected value="">Choose...</option>
       <option value="similiPaper">Simili Paper</option>
       <option value="artPaper">Art Paper</option>
     </select>
   </div>
   <div class="form-group col-md-6">
-    <label for="">Select paper size</label>
-    <select class="form-control" name="orderPaperSize" id="orderPaperSize" required>
+    <label for="paperSize">Select paper size</label>
+    <select
+      class="form-control"
+      name="orderPaperSize"
+      id="orderPaperSize"
+      required
+    >
       <option disabled selected value="">Choose...</option>
       <option value="A4">A4</option>
       <option value="A5">A5</option>
@@ -23,7 +33,7 @@
         type="checkbox"
         class="form-check-input"
         name="orderDoubleSide"
-        id=""
+        id="orderDoubleSide"
       />
       Double side
     </label>
@@ -36,13 +46,20 @@
         name="orderDesignService"
         id="orderDesignService"
       />
-      Design Service (will contact for addtional details)
+      <div id="orderDesignServiceText">
+        Design Service (will contact for addtional details)
+      </div>
     </label>
   </div>
 </div>
 <div class="row ml-auto mt-3" id="orderFileArea">
   <div class="form-group">
     <label for="orderFile">Select File</label>
-    <input type="file" class="form-control-file" name="orderFile" id="orderFile"/>
+    <input
+      type="file"
+      class="form-control-file"
+      name="orderFile"
+      id="orderFile"
+    />
   </div>
 </div>

@@ -1,7 +1,7 @@
 <div class="row">
   <div class="form-group col-md-6">
-    <label for="">Choose a finish...</label>
-    <select class="custom-select" id="orderFinishType" required>
+    <label for="orderFinishType">Choose a finish...</label>
+    <select name="orderFinishType"class="custom-select" id="orderFinishType" required>
       <option disabled selected value="">Choose...</option>
       <option value="hole">Holes</option>
       <option value="pipe">Pipe</option>
@@ -40,7 +40,9 @@
         name="orderDesignService"
         id="orderDesignService"
       />
-      Design Service (will contact for addtional details)
+      <div id="orderDesignServiceText">
+        Design Service (will contact for addtional details)
+      </div>
     </label>
   </div>
 </div>

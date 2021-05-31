@@ -1,5 +1,5 @@
 import { getProfile, getUid, initSession } from "../sessionManager.js";
-import { initFire, initFireDb } from "../sharedFunction.js";
+import { initFire, initFireDb, bindHardEvent } from "../sharedFunction.js";
 import { customAlphabet } from "../assets/frameworks/nanoid.js";
 
 $.ajaxSetup({
@@ -50,13 +50,16 @@ function main() {
         "../assets/html/hardcover.html",
         function (response, status, xhr) {
           if (status == "success") {
-            bindHardEvent();
+            $("#hardMaterial").on("change", function () {
+              var material = this.value;
+              bindHardEvent(material);
+            });
             $("#orderFile").prop("required", true);
           }
         }
       );
     }
-    if (selectedForm.match(/businessCard/gi)) {
+    if (selectedForm.match(/Business Card/gi)) {
       $("#orderAddInfoArea").load(
         "../assets/html/businessCard.html",
         function (response, status, xhr) {
@@ -68,7 +71,7 @@ function main() {
         }
       );
     }
-    if (selectedForm.match(/banner/gi)) {
+    if (selectedForm.match(/Banner/gi)) {
       $("#orderAddInfoArea").load(
         "../assets/html/bunting.html",
         function (response, status, xhr) {
@@ -95,8 +98,8 @@ function main() {
       paymentId: "",
       orderDate: orderDate,
       orderEstPrice: "",
-      orderStatus: "Order Placed",
-      paymentstat: "Not Paid",
+      orderStatus: "Order placed",
+      paymentstat: "Not paid",
       deisgnServiceStatus: "",
       problem: "",
     };
@@ -116,7 +119,11 @@ function main() {
       var orderFile = document.getElementById("orderFile").files[0];
       var refFileString = orderId + "/" + orderFile.name;
       addData["fileId"] = refFileString;
-      delete addData.deisgnServiceStatus;
+      addData.deisgnServiceStatus = "Not Requested";
+    }
+
+    if (orderDetail.orderDesignService == "on") {
+      addData.deisgnServiceStatus = "Service requested";
     }
 
     jsonData.orderDetail = orderDetail;
@@ -132,7 +139,11 @@ function main() {
           uploadFile();
           $("#progressBarArea").show();
         } else {
-          $("#messageContent").html("Success!<br>Your order id "+orderId+"<br>Please Wait for refresh");
+          $("#messageContent").html(
+            "Success!<br>Your order id " +
+              orderId +
+              "<br>Please Wait for refresh"
+          );
           $("#messageDialog").modal({ backdrop: "static", keyboard: false });
           setTimeout(() => {
             location.reload();
@@ -147,34 +158,6 @@ function main() {
 
     $("#submitButton").prop("disabled", true);
     $("#order-form :input").prop("disabled", true);
-  });
-}
-
-function bindHardEvent() {
-  $("#hardMaterial").on("change", function () {
-    var material = this.value;
-    $("#hardColor").empty();
-    $("#hardColor").append(
-      `<option disabled selected value="">Choose color...</option>`
-    );
-    if (material == "buckram") {
-      var optionsColor = { 550: "Blue", 557: "Green", 567: "Maroon" };
-      var hashColor = ["#363490", "#0d693f", "#ac252c"];
-    }
-    if (material == "arcylic") {
-      var optionsColor = { 2624: "Maroon", 2633: "Black", 2622: "Dark blue" };
-      var hashColor = ["#261f63", "#ac252c", "#000000"];
-    }
-    var hashColorIndex = 0;
-    $.each(optionsColor, function (key, text) {
-      $("#hardColor").append(
-        $("<option>", { value: key }).text(text).css({
-          "background-color": hashColor[hashColorIndex],
-          color: "white",
-        })
-      );
-      hashColorIndex++;
-    });
   });
 }
 
@@ -208,7 +191,9 @@ function uploadFile() {
       console.error("upload error! " + err);
     },
     function complete() {
-      $("#progressMessage").html("Complete! Your order id is "+orderId+" Please Wait for refresh");
+      $("#progressMessage").html(
+        "Complete! Your order id is " + orderId + " Please Wait for refresh"
+      );
       setTimeout(() => {
         location.reload();
       }, 5000);
@@ -217,7 +202,7 @@ function uploadFile() {
 }
 
 function bindBusinessCard() {
-  $("label[for='orderQuantity']").append(" (box) 100 pieces/box");
+  $("label[for='orderQuantity']").append(" (boxes) 100 pieces/box");
 }
 
 function revertQtyText() {
@@ -237,10 +222,10 @@ async function fillPersonalInfo() {
   $("#orderContactNum").val(userProfile.contactNum);
 }
 
-
 export {
-  bindHardEvent,
   uploadFile,
   bindBusinessCard,
-  revertQtyText
-}
+  revertQtyText,
+  bindDeisgnService,
+  fillPersonalInfo,
+};
