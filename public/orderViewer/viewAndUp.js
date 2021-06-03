@@ -42,6 +42,12 @@ function loadOrders() {
       querySnapshot.forEach((doc) => {
         var rawData = doc.data();
         var docId = doc.id;
+        var dateUpdate = "";
+        if (rawData.statusDetail.orderDateUpdate) {
+          dateUpdate = rawData.statusDetail.orderDateUpdate
+            .toDate()
+            .toDateString();
+        }
         var objCreated = [
           docId,
           rawData.statusDetail.orderStatus,
@@ -49,6 +55,7 @@ function loadOrders() {
           rawData.statusDetail.paymentstat,
           rawData.statusDetail.deisgnServiceStatus,
           rawData.orderDetail.formOption,
+          dateUpdate,
         ];
         obtainedData.push(objCreated);
       });
@@ -62,14 +69,12 @@ function loadOrders() {
 function loadTable(recieveData) {
   var dataTableOption = {
     paging: false,
-    ordering: false,
     info: false,
     select: "single",
     data: recieveData,
   };
   var theTable = $("#dataTable").DataTable(dataTableOption);
   var orderId;
-  //listner
   var numRows = theTable.rows().count();
   var numChange = 0;
   var fireDb = initFireDb();
@@ -89,27 +94,37 @@ function loadTable(recieveData) {
     .on("select", function (e, dt, type, indexes) {
       var tableData = theTable.row(indexes).data();
       var estPrice = tableData[2];
+      var orderStats = tableData[1];
       orderId = tableData[0];
+
       if (estPrice != "") {
         $("#payBut").prop("disabled", false);
       } else {
         $("#payBut").prop("disabled", true);
       }
+      if (
+        orderStats == "Payment confirmed" ||
+        orderStats == "Producing order" ||
+        orderStats == "Order ready to pickup" ||
+        orderStats == "Order Complete"
+      ) {
+        $("#editBut").prop("disabled", true);
+      } else {
+        $("#editBut").prop("disabled", false);
+      }
+      if (
+        orderStats == "Payment confirmed" ||
+        orderStats == "Producing order" ||
+        orderStats == "Order ready to pickup" ||
+        orderStats == "Order Complete" ||
+        orderStats == "Order cancelation requested"
+      ) {
+        $("#rmBut").prop("disabled", true);
+      } else {
+        $("#rmBut").prop("disabled", false);
+      }
+
       $("#viewBut").prop("disabled", false);
-      $("#viewBut").click(function (event) {
-        event.preventDefault();
-        loadForm(orderId, "view");
-      });
-      $("#editBut").prop("disabled", false);
-      $("#editBut").click(function (e) {
-        e.preventDefault();
-        loadForm(orderId, "updateUser");
-      });
-      $("#rmBut").prop("disabled", false);
-      $("#rmBut").click(function (e) {
-        e.preventDefault();
-        cancelOrder(orderId, detacher);
-      });
     })
     .on("deselect", function (e, dt, type, indexes) {
       $("#viewBut").prop("disabled", true);
@@ -117,6 +132,18 @@ function loadTable(recieveData) {
       $("#payBut").prop("disabled", true);
       $("#rmBut").prop("disabled", true);
     });
+  $("#viewBut").click(function (event) {
+    event.preventDefault();
+    loadForm(orderId, "view");
+  });
+  $("#editBut").click(function (e) {
+    e.preventDefault();
+    loadForm(orderId, "updateUser");
+  });
+  $("#rmBut").click(function (e) {
+    e.preventDefault();
+    cancelOrder(orderId, detacher);
+  });
 }
 
 function cancelOrder(orderIdGet, detachGot) {
@@ -135,6 +162,7 @@ function cancelOrder(orderIdGet, detachGot) {
         });
         $("#yesButton").click(function (e) {
           detachGot();
+          $("#messageDialogCloseBut").hide();
           $("#messageContent").html("Placing request");
           e.preventDefault();
           var fireDB = initFireDb();
@@ -142,7 +170,9 @@ function cancelOrder(orderIdGet, detachGot) {
             .collection("order")
             .doc(orderIdGet)
             .update({
-              "statusDetail.orderStatus": " Order cancelation requested",
+              "statusDetail.orderStatus": "Order cancelation requested",
+              "statusDetail.orderDateUpdate":
+                firebase.firestore.FieldValue.serverTimestamp(),
             })
             .then(() => {
               $("#messageContent").append(

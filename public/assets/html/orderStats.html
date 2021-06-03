@@ -10,6 +10,18 @@
     />
   </div>
   <div class="form-group col-md-6 mx-auto">
+    <label for="orderDate">Time updated</label>
+    <input
+      type="datetime-local"
+      class="form-control"
+      name="orderDateUpdate"
+      id="orderDateUpdate"
+      required
+    />
+  </div>
+</div>
+<div class="row">
+  <div class="form-group col-md-12 mx-auto">
     <label for="orderEstPrice">Estimated price (RM)</label>
     <input
       type="text"
@@ -37,8 +49,15 @@
         <option value="Payment confirmed">Payment confirmed</option>
         <option value="Producing order">Producing order</option>
         <option value="Order ready to pickup">Order ready to pickup</option>
+        <option value="Order Complete">Order Complete</option>
         <option value="Order cancelation requested">
           Order cancelation requested
+        </option>
+        <option value="Order update placed">
+          Order update placed
+        </option>
+        <option value="Order update confirmed">
+          Order update confirmed
         </option>
       </select>
     </div>

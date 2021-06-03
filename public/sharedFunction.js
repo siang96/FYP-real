@@ -1,3 +1,5 @@
+import { getUid, getProfile } from "./sessionManager.js";
+
 function hideDialogCloseBut() {
   $("#messageDialogCloseBut").hide();
   $("#messageDialogFooter").hide();
@@ -71,20 +73,20 @@ async function loadForm(orderIdObtained, buttonType) {
           }
         }
         if (buttonType.match(/update/gi)) {
+          $("#messageTitle").html("Update Order");
+          $("#messageDialogFooter").hide();
           $("#messageDialogCloseBut").show();
-          //bind co events
-          console.log("called");
-          //bind other stuff
+          $("#formOption").prop("disabled", true);
         }
-        if (buttonType == "updateAdmin") {
+        if (buttonType == "updateStaff") {
+          console.log("update staff called");
           loadOrderStats(order.statusDetail, buttonType);
           //bind o stats events
           //bind sumnit
           //based on users
         }
         if (buttonType == "updateUser") {
-          //bind sumnit
-          //based on users
+          updateUser(order);
         }
       }
     }
@@ -92,6 +94,143 @@ async function loadForm(orderIdObtained, buttonType) {
 
   //if (functype) is edit, show orderfile area bind show submit but
   //=> delete replace file on submit
+}
+
+function bindCommonEvents(selectedFormGet) {
+  $("#submitButton").show();
+  if (selectedFormGet.match(/Flyers/gi)) {
+    $("#orderAddInfoArea").load(
+      "../assets/html/flyer.html",
+      function (response, status, xhr) {
+        if (status == "success") {
+          bindDeisgnService();
+          $("#orderFile").prop("required", true);
+        }
+      }
+    );
+  }
+  if (selectedFormGet.match(/Hardcover/gi)) {
+    $("#orderAddInfoArea").load(
+      "../assets/html/hardcover.html",
+      function (response, status, xhr) {
+        if (status == "success") {
+          $("#hardMaterial").on("change", function () {
+            var material = this.value;
+            bindHardEvent(material);
+          });
+          $("#orderFile").prop("required", true);
+        }
+      }
+    );
+  }
+  if (selectedFormGet.match(/Business Card/gi)) {
+    $("#orderAddInfoArea").load(
+      "../assets/html/businessCard.html",
+      function (response, status, xhr) {
+        if (status == "success") {
+          bindBusinessCard();
+          bindDeisgnService();
+          $("#orderFile").prop("required", true);
+        }
+      }
+    );
+  }
+  if (selectedFormGet.match(/Banner/gi)) {
+    $("#orderAddInfoArea").load(
+      "../assets/html/bunting.html",
+      function (response, status, xhr) {
+        if (status == "success") {
+          bindDeisgnService();
+          $("#orderFile").prop("required", true);
+        }
+      }
+    );
+  }
+}
+
+function bindStatsEvent() {
+  //stats event
+}
+
+function bindUpdatesEvent(optionGet) {
+  if (optionGet.match(/flyer/gi)) {
+    bindDeisgnService();
+    $("#orderFile").prop("required", true);
+  }
+  if (optionGet.match(/hard/gi)) {
+    $("#hardMaterial").on("change", function () {
+      var material = this.value;
+      bindHardEvent(material);
+    });
+    $("#orderFile").prop("required", true);
+  }
+  if (optionGet.match(/bCard/gi)) {
+    bindBusinessCard();
+    bindDeisgnService();
+    $("#orderFile").prop("required", true);
+  }
+  if (optionGet.match(/bunting/gi)) {
+    bindDeisgnService();
+    $("#orderFile").prop("required", true);
+  }
+}
+
+function updateStaff(params) {}
+
+function updateUser(oldOrder) {
+  $("#orderForm").submit(function (e) {
+    e.preventDefault();
+    var theFile = document.getElementById("orderFile").files[0];
+    var oldFileRef = oldOrder.statusDetail.fileId;
+    var orderId = $("#orderId").val();
+    var formOption = $("#formOption").val();
+    var orderDateUp = new Date();
+    var personalInfoData = $("#personalInfoArea :input").serializeArray();
+    var orderInfoData = $("#orderAddInfoArea :input").serializeArray();
+    var jsonDataUpdate = {};
+    var orderDetail = {};
+    var personalDetail = {};
+
+    var addData = {
+      orderDateUpdate: orderDateUp,
+      orderEstPrice: "",
+      orderStatus: "Order update placed",
+      paymentstat: "Not paid",
+      deisgnServiceStatus: "",
+      problem: "",
+    };
+
+    orderDetail["formOption"] = $("#formOption").val();
+
+    orderInfoData.forEach((dataField) => {
+      orderDetail[dataField.name] = dataField.value;
+    });
+
+    personalInfoData.forEach((dataField) => {
+      personalDetail[dataField.name] = dataField.value;
+    });
+
+    if (orderDetail.orderDesignService != "on") {
+      var orderFile = document.getElementById("orderFile").files[0];
+      var refFileString = orderId + "/" + orderFile.name;
+      addData["fileId"] = refFileString;
+      addData.deisgnServiceStatus = "Not Requested";
+    }
+
+    if (orderDetail.orderDesignService == "on") {
+      addData.deisgnServiceStatus = "Service requested";
+    }
+
+    jsonDataUpdate.orderDetail = orderDetail;
+    jsonDataUpdate.personalDetail = personalDetail;
+    jsonDataUpdate.statusDetail = addData;
+
+    console.log(jsonDataUpdate);
+    if (theFile) {
+      //delete file
+      console.log("delete file");
+    }
+  });
 }
 
 function downloadFile(fileRefProvided) {
@@ -116,7 +255,7 @@ function loadPInfo(pDetailRecieve, buttonCaller) {
     "../assets/html/personalInfo.html",
     function (response, status, xhr) {
       if (status == "success") {
-        setData(pDetailRecieve, "pInfo", buttonCaller);
+        setDataEvent(pDetailRecieve, "pInfo", buttonCaller);
         if (buttonCaller == "view") {
           $("#personalInfoArea :input").prop("disabled", true);
         }
@@ -132,7 +271,7 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       "../assets/html/flyer.html",
       function (response, status, xhr) {
         if (status == "success") {
-          setData(detailRecieve, "flyer", callerTypeGet);
+          setDataEvent(detailRecieve, "flyer", callerTypeGet);
           fieldDisabler(callerTypeGet);
         }
       }
@@ -143,18 +282,18 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       "../assets/html/hardcover.html",
       function (response, status, xhr) {
         if (status == "success") {
-          setData(detailRecieve, "hard", callerTypeGet);
+          setDataEvent(detailRecieve, "hard", callerTypeGet);
           fieldDisabler(callerTypeGet);
         }
       }
     );
   }
-  if (selectedForm.match(/businessCard/gi)) {
+  if (selectedForm.match(/business Card/gi)) {
     $("#orderAddInfoArea").load(
       "../assets/html/businessCard.html",
       function (response, status, xhr) {
         if (status == "success") {
-          setData(detailRecieve, "bcard", callerTypeGet);
+          setDataEvent(detailRecieve, "bcard", callerTypeGet);
           fieldDisabler(callerTypeGet);
         }
       }
@@ -165,7 +304,7 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       "../assets/html/bunting.html",
       function (response, status, xhr) {
         if (status == "success") {
-          setData(detailRecieve, "bunting", callerTypeGet);
+          setDataEvent(detailRecieve, "bunting", callerTypeGet);
           fieldDisabler(callerTypeGet);
         }
       }
@@ -185,7 +324,7 @@ function loadOrderStats(data, callRecieved) {
     "../assets/html/orderStats.html",
     function (response, status, xhr) {
       if (status == "success") {
-        setData(data, "oStats", callRecieved);
+        setDataEvent(data, "oStats", callRecieved);
         if (callRecieved == "view") {
           $("#orderStatsArea :input").prop("disabled", true);
         }
@@ -194,36 +333,13 @@ function loadOrderStats(data, callRecieved) {
   );
 }
 
-function setData(data, formType, caller) {
+function setDataEvent(data, formType, caller) {
   if (formType == "pInfo") {
     $("#OrderName").val(data.OrderName);
     $("#orderContactNum").val(data.orderContactNum);
     $("#orderContactMail").val(data.orderContactMail);
     $("#orderQuantity").val(data.orderQuantity);
   }
-  if (caller == "view") {
-    if (formType == "flyer") {
-      $("label[for='paperType']").html("Selected paper type");
-      $("label[for='paperSize']").html("Selected paper size");
-      $("#orderDesignServiceText").html("Design Service");
-    }
-    if (formType == "hard") {
-      $("label[for='hardMaterial']").html("Choosen Material");
-      $("label[for='hardColor']").html("Choosen color");
-      $("#fileAddInfo").hide();
-    }
-    if (formType == "bcard") {
-      $("label[for='orderQuantity']").append(" (boxes) 100 pieces/box");
-      $("#orderDesignServiceText").html("Design Service");
-    }
-    if (formType == "bunting") {
-      $("#orderDesignServiceText").html("Design Service");
-      $("label[for='orderFinishType']").append("Finish choosen");
-      $("label[for='orderSizeHeight']").append("Height (Foot)");
-      $("label[for='orderSizeWidth']").append("Width (Foot)");
-    }
-  }
-  //caller if edit update status field
 
   if (formType == "flyer") {
     $("#orderPaperType").val(data.orderPaperType);
@@ -251,12 +367,46 @@ function setData(data, formType, caller) {
     $("#orderStatus").val(data.orderStatus);
     $("#deisgnServiceStatus").val(data.deisgnServiceStatus);
     $("#orderDate").val(toIsoString(data.orderDate.toDate()));
+    if (data.orderDateUpdate) {
+      $("#orderDateUpdate").val(toIsoString(data.orderDateUpdate.toDate()));
+    }
     $("#orderEstPrice").val(data.orderEstPrice);
     $("#paymentstat").val(data.paymentstat);
     if (data.problem == "") {
       $("#problem").val("No problems");
     } else {
       $("#problem").val(data.problem);
+    }
+  }
+  if (caller == "view") {
+    if (formType == "flyer") {
+      $("label[for='paperType']").html("Selected paper type");
+      $("label[for='paperSize']").html("Selected paper size");
+      $("#orderDesignServiceText").html("Design Service");
+    }
+    if (formType == "hard") {
+      $("label[for='hardMaterial']").html("Choosen Material");
+      $("label[for='hardColor']").html("Choosen color");
+      $("#fileAddInfo").hide();
+    }
+    if (formType == "bcard") {
+      $("label[for='orderQuantity']").append(" (boxes) 100 pieces/box");
+      $("#orderDesignServiceText").html("Design Service");
+    }
+    if (formType == "bunting") {
+      $("#orderDesignServiceText").html("Design Service");
+      $("label[for='orderFinishType']").append("Finish choosen");
+      $("label[for='orderSizeHeight']").append("Height (Foot)");
+      $("label[for='orderSizeWidth']").append("Width (Foot)");
+    }
+  }
+  if (caller.match(/update/gi)) {
+    bindUpdatesEvent(formType);
+    if (formType == "bunting" || formType == "bcard" || formType == "flyer") {
+      if (data.orderDesignService == "on") {
+        $("#orderFile").prop("disabled", true);
+        $("#orderFile").prop("required", false);
+      }
     }
   }
 }
@@ -321,12 +471,76 @@ async function getOrder(oid) {
   }
 }
 
+function uploadFile(orderIdGot) {
+  var theFile = document.getElementById("orderFile").files[0];
+  var refString = orderIdGot + "/" + theFile.name;
+  var storeRef = firebase.storage().ref(refString);
+  var upTask = storeRef.put(theFile);
+  upTask.on(
+    "state_changed",
+    function progress(snapshot) {
+      var percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      $("#theProgressBar")
+        .attr("aria-valuenow", percent)
+        .css("width", percent + "%");
+    },
+    function error(err) {
+      console.error("upload error! " + err);
+    },
+    function complete() {
+      $("#progressMessage").html(
+        "Complete! Your order id is " + orderIdGot + " Please Wait for refresh"
+      );
+      setTimeout(() => {
+        location.reload();
+      }, 5000);
+    }
+  );
+}
+
+function bindDeisgnService() {
+  $("#orderDesignService").on("change", function (event) {
+    if (event.target.checked) {
+      $("#orderFile").prop("disabled", true);
+      $("#orderFile").prop("required", false);
+    } else {
+      $("#orderFile").prop("disabled", false);
+      $("#orderFile").prop("required", true);
+    }
+  });
+}
+
+function bindBusinessCard() {
+  $("label[for='orderQuantity']").append(" (boxes) 100 pieces/box");
+}
+
+function revertQtyText() {
+  $("label[for='orderQuantity']").text("Quantity");
+}
+
+async function fillPersonalInfo() {
+  var uid = getUid();
+  var userProfile, userProfileSys;
+  userProfile = await getProfile(uid);
+  userProfileSys = firebase.auth().currentUser;
+  setTimeout(() => {
+    $("#messageDialog").modal("hide");
+  }, 1000);
+  $("#OrderName").val(userProfile.name);
+  $("#orderContactMail").val(userProfileSys.email);
+  $("#orderContactNum").val(userProfile.contactNum);
+}
+
 export {
+  fillPersonalInfo,
+  bindCommonEvents,
+  revertQtyText,
+  uploadFile,
   mediumDiaglog,
-  bindHardEvent,
   hideDialogCloseBut,
   initFire,
   initFireDb,
   showDialogCloseBut,
   loadForm,
+  getOrder,
 };

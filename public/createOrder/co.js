@@ -1,6 +1,13 @@
-import { getProfile, getUid, initSession } from "../sessionManager.js";
-import { initFire, initFireDb, bindHardEvent } from "../sharedFunction.js";
+import {
+  bindCommonEvents,
+  initFire,
+  initFireDb,
+  uploadFile,
+  revertQtyText,
+  fillPersonalInfo,
+} from "../sharedFunction.js";
 import { customAlphabet } from "../assets/frameworks/nanoid.js";
+import { getUid, initSession } from "../sessionManager.js";
 
 $.ajaxSetup({
   cache: false,
@@ -34,54 +41,7 @@ function main() {
         }
       }
     );
-    if (selectedForm.match(/Flyers/gi)) {
-      $("#orderAddInfoArea").load(
-        "../assets/html/flyer.html",
-        function (response, status, xhr) {
-          if (status == "success") {
-            bindDeisgnService();
-            $("#orderFile").prop("required", true);
-          }
-        }
-      );
-    }
-    if (selectedForm.match(/Hardcover/gi)) {
-      $("#orderAddInfoArea").load(
-        "../assets/html/hardcover.html",
-        function (response, status, xhr) {
-          if (status == "success") {
-            $("#hardMaterial").on("change", function () {
-              var material = this.value;
-              bindHardEvent(material);
-            });
-            $("#orderFile").prop("required", true);
-          }
-        }
-      );
-    }
-    if (selectedForm.match(/Business Card/gi)) {
-      $("#orderAddInfoArea").load(
-        "../assets/html/businessCard.html",
-        function (response, status, xhr) {
-          if (status == "success") {
-            bindBusinessCard();
-            bindDeisgnService();
-            $("#orderFile").prop("required", true);
-          }
-        }
-      );
-    }
-    if (selectedForm.match(/Banner/gi)) {
-      $("#orderAddInfoArea").load(
-        "../assets/html/bunting.html",
-        function (response, status, xhr) {
-          if (status == "success") {
-            bindDeisgnService();
-            $("#orderFile").prop("required", true);
-          }
-        }
-      );
-    }
+    bindCommonEvents(selectedForm);
   });
   $("#order-form").submit(function (event) {
     event.preventDefault();
@@ -95,7 +55,6 @@ function main() {
     var personalDetail = {};
 
     var addData = {
-      paymentId: "",
       orderDate: orderDate,
       orderEstPrice: "",
       orderStatus: "Order placed",
@@ -136,7 +95,7 @@ function main() {
       .set(jsonData)
       .then(function () {
         if (orderDetail.orderDesignService != "on") {
-          uploadFile();
+          uploadFile(orderId);
           $("#progressBarArea").show();
         } else {
           $("#messageContent").html(
@@ -160,72 +119,3 @@ function main() {
     $("#order-form :input").prop("disabled", true);
   });
 }
-
-function bindDeisgnService() {
-  $("#orderDesignService").on("change", function (event) {
-    if (event.target.checked) {
-      $("#orderFile").prop("disabled", true);
-      $("#orderFile").prop("required", false);
-    } else {
-      $("#orderFile").prop("disabled", false);
-      $("#orderFile").prop("required", true);
-    }
-  });
-}
-
-function uploadFile() {
-  var theFile = document.getElementById("orderFile").files[0];
-  var refString = orderId + "/" + theFile.name;
-  console.log(refString);
-  var storeRef = firebase.storage().ref(refString);
-  var upTask = storeRef.put(theFile);
-  upTask.on(
-    "state_changed",
-    function progress(snapshot) {
-      var percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      $("#theProgressBar")
-        .attr("aria-valuenow", percent)
-        .css("width", percent + "%");
-    },
-    function error(err) {
-      console.error("upload error! " + err);
-    },
-    function complete() {
-      $("#progressMessage").html(
-        "Complete! Your order id is " + orderId + " Please Wait for refresh"
-      );
-      setTimeout(() => {
-        location.reload();
-      }, 5000);
-    }
-  );
-}
-
-function bindBusinessCard() {
-  $("label[for='orderQuantity']").append(" (boxes) 100 pieces/box");
-}
-
-function revertQtyText() {
-  $("label[for='orderQuantity']").text("Quantity");
-}
-
-async function fillPersonalInfo() {
-  var uid = getUid();
-  var userProfile, userProfileSys;
-  userProfile = await getProfile(uid);
-  userProfileSys = firebase.auth().currentUser;
-  setTimeout(() => {
-    $("#messageDialog").modal("hide");
-  }, 1000);
-  $("#OrderName").val(userProfile.name);
-  $("#orderContactMail").val(userProfileSys.email);
-  $("#orderContactNum").val(userProfile.contactNum);
-}
-
-export {
-  uploadFile,
-  bindBusinessCard,
-  revertQtyText,
-  bindDeisgnService,
-  fillPersonalInfo,
-};

@@ -1,4 +1,9 @@
-import { hideDialogCloseBut, initFireDb } from "./sharedFunction.js";
+import {
+  hideDialogCloseBut,
+  initFireDb,
+  mediumDiaglog,
+} from "./sharedFunction.js";
+
 let isSignOut = false;
 let currPage = window.location.pathname;
 function initSession() {
@@ -107,6 +112,7 @@ function redirector(uProfile) {
 }
 
 function signOut() {
+  mediumDiaglog();
   firebase
     .auth()
     .signOut()

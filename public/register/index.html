@@ -49,8 +49,8 @@
             <input id="usrName" type="text" class="form-control" name="usrName" required />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
-            <label for="ContactNum">Contact number</label>
-            <input id="usrContactNum" type="number" class="form-control" name="usrContactNum" required />
+            <label for="ContactNum">Contact number (numbers only)</label>
+            <input id="usrContactNum" type="tel" class="form-control" name="usrContactNum" required pattern="\d+"/>
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="email">Email</label>

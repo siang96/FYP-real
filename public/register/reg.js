@@ -1,5 +1,10 @@
 import { initSession } from "../sessionManager.js";
-import { hideDialogCloseBut, initFire, initFireDb } from "../sharedFunction.js";
+import {
+  hideDialogCloseBut,
+  initFire,
+  initFireDb,
+  showDialogCloseBut,
+} from "../sharedFunction.js";
 $(document).ready(function () {
   initFire();
   initSession();
@@ -33,10 +38,9 @@ function validPw() {
 }
 
 function register(mail, pw) {
-  
   hideDialogCloseBut();
   $("#messageDialog").modal({ backdrop: "static", keyboard: false });
-  $("#messageContent").html("Registering");   
+  $("#messageContent").html("Registering");
   firebase
     .auth()
     .createUserWithEmailAndPassword(mail, pw)
@@ -44,39 +48,33 @@ function register(mail, pw) {
       initalUsr(regUserCredential.user);
     })
     .catch((error) => {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      $("#messageContent").html("Register failed!");
-      console.error(
-        "error occured ! \ncode: " +
-          errorCode +
-          "\nmessage: " +
-          errorMessage +
-          "\nfull error: \n" +
-          error
+      showDialogCloseBut();
+      $("#messageContent").html(
+        "Register failed!<br>Error Message<br>" + error
       );
+      console.error("auth reg error! \ncode: " + "full error: \n" + error);
     });
 }
 
 function initalUsr(user) {
-  var nameAdd, contactAdd,fireDB;
-  fireDB=initFireDb();
+  var nameAdd, contactAdd, fireDB;
+  fireDB = initFireDb();
   nameAdd = $("#usrName").val();
   contactAdd = $("#usrContactNum").val();
   var newUsrData = {
     usrType: "cust",
     name: nameAdd,
     contactNum: contactAdd,
+    email:user.email
   };
   fireDB
     .collection("user")
     .doc(user.uid)
     .set(newUsrData)
-    .then(function() {
+    .then(function () {
       $("#messageContent").html("Register success <br> Please Wait for Login");
     })
     .catch((error) => {
-      $("#messageContent").html("Register failed!");
-      console.error("error occured ! \nfull error: \n" + error);
+      console.error("error initi user ! \nfull error: \n" + error);
     });
 }
