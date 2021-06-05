@@ -42,9 +42,6 @@ function mediumDiaglog() {
 
 async function loadForm(orderIdObtained, buttonType, updateDetacher) {
   var order = await getOrder(orderIdObtained);
-  if (order.statusDetail.deisgnServiceStatus == "Not Requested") {
-    var fileRef = order.statusDetail.fileId;
-  }
   var uid = getUid();
   var userProfile = await getProfile(uid);
   var currUsrName = userProfile.name;
@@ -66,11 +63,11 @@ async function loadForm(orderIdObtained, buttonType, updateDetacher) {
           $("#messageTitle").html("View Order");
           $("#formOption").prop("disabled", true);
           $("#submitButton").hide();
-          if (order.statusDetail.deisgnServiceStatus == "Not Requested") {
+          if (order.statusDetail.fileId) {
             $("#downButArea").show();
             $("#downButArea").click(function (event) {
               event.preventDefault();
-              downloadFile(fileRef);
+              downloadFile(order.statusDetail.fileId);
             });
           }
         }
@@ -82,10 +79,10 @@ async function loadForm(orderIdObtained, buttonType, updateDetacher) {
         }
         if (buttonType == "updateStaff") {
           loadOrderStats(order.statusDetail, buttonType);
-          updateStaff(order, updateDetacher, currUsrName);
+          mergeupdate(order, updateDetacher, currUsrName, "updateStaff");
         }
         if (buttonType == "updateUser") {
-          updateUser(order, updateDetacher, currUsrName);
+          mergeupdate(order, updateDetacher, currUsrName, "updateUser");
         }
       }
     }
@@ -167,121 +164,9 @@ function bindUpdatesEvent(optionGet) {
   }
 }
 
-function updateStaff(oldOrder, detachGot, uNameNow) {
+function mergeupdate(oldOrder, detachGot, uNameNow, caller) {
   $("#orderForm").submit(function (e) {
     detachGot();
-    e.preventDefault();
-    var theFile = document.getElementById("orderFile").files[0];
-    var oldFileRef = oldOrder.statusDetail.fileId;
-    var orderId = $("#orderId").val();
-    var orderDateUp = new Date();
-    var personalInfoData = $("#personalInfoArea :input").serializeArray();
-    var orderInfoData = $("#orderAddInfoArea :input").serializeArray();
-    var jsonDataUpdate = {};
-    var orderDetail = {};
-    var personalDetail = {};
-    var addDataRaw = $("#orderStatsArea :input").serializeArray();
-    var addData = {};
-
-    orderDetail["formOption"] = $("#formOption").val();
-
-    orderInfoData.forEach((dataField) => {
-      orderDetail[dataField.name] = dataField.value;
-    });
-
-    personalInfoData.forEach((dataField) => {
-      personalDetail[dataField.name] = dataField.value;
-    });
-
-    addDataRaw.forEach((dataField) => {
-      addData[dataField.name] = dataField.value;
-    });
-    addData.orderDateUpdate = orderDateUp;
-    addData.orderStatus = "Order update placed";
-    addData.lastUserUpdate = uNameNow;
-    if (orderDetail.orderDoubleSide != "on") {
-      orderDetail.orderDoubleSide = "off";
-    }
-
-    if (orderDetail.orderDesignService != "on") {
-      if (theFile) {
-        var refFileString = orderId + "/" + theFile.name;
-        addData["fileId"] = refFileString;
-      }
-      if (oldOrder.orderDetail.orderDesignService == "on") {
-        addData.deisgnServiceStatus = "Service canceled";
-      }
-    }
-
-    if (oldOrder.orderDetail.orderDesignService != "on") {
-      if (orderDetail.orderDesignService == "on") {
-        addData.deisgnServiceStatus = "Service requested";
-      }
-    }
-
-    for (const key in orderDetail) {
-      if (Object.hasOwnProperty.call(orderDetail, key)) {
-        const element = orderDetail[key];
-        const updateKey = "orderDetail." + key;
-        jsonDataUpdate[updateKey] = element;
-      }
-    }
-    for (const key in personalDetail) {
-      if (Object.hasOwnProperty.call(personalDetail, key)) {
-        const element = personalDetail[key];
-        const updateKey = "personalDetail." + key;
-        jsonDataUpdate[updateKey] = element;
-      }
-    }
-    for (const key in addData) {
-      if (Object.hasOwnProperty.call(addData, key)) {
-        const element = addData[key];
-        const updateKey = "statusDetail." + key;
-        jsonDataUpdate[updateKey] = element;
-      }
-    }
-    $("#submitButton").prop("disabled", true);
-    $("#orderForm :input").prop("disabled", true);
-
-    console.log(jsonDataUpdate);
-    if (theFile) {
-      //delete file
-      if (oldFileRef) {
-        var removeFielRef = firebase.storage().ref(oldFileRef);
-        removeFielRef
-          .delete()
-          .then(() => {
-            $("#messageContent").append("<br>Old File removed!");
-          })
-          .catch((error) => {
-            console.error("error occur: " + error);
-          });
-      }
-      uploadFile(orderId);
-    }
-    // firebase stuff
-    var fireDB = initFireDb();
-    fireDB
-      .collection("order")
-      .doc(orderId)
-      .update(jsonDataUpdate)
-      .then(() => {
-        $("#messageContent").append(
-          "<br>Update Success!<br> Please Wait for reload"
-        );
-        setTimeout(() => {
-          location.reload();
-        }, 5000);
-      })
-      .catch(() => {
-        console.error("error occur: " + error);
-      });
-  });
-}
-
-function updateUser(oldOrder, detachRec, uNameNow) {
-  $("#orderForm").submit(function (e) {
-    detachRec();
     e.preventDefault();
     var theFile = document.getElementById("orderFile").files[0];
     var oldFileRef = oldOrder.statusDetail.fileId;
@@ -299,6 +184,13 @@ function updateUser(oldOrder, detachRec, uNameNow) {
       lastUserUpdate: uNameNow,
     };
 
+    if (caller == "updateStaff") {
+      var addDataRaw = $("#orderStatsArea :input").serializeArray();
+      addDataRaw.forEach((dataField) => {
+        addData[dataField.name] = dataField.value;
+      });
+    }
+
     orderDetail["formOption"] = $("#formOption").val();
 
     orderInfoData.forEach((dataField) => {
@@ -354,7 +246,6 @@ function updateUser(oldOrder, detachRec, uNameNow) {
     $("#orderForm :input").prop("disabled", true);
 
     if (theFile) {
-      //delete file
       if (oldFileRef) {
         var removeFielRef = firebase.storage().ref(oldFileRef);
         removeFielRef
@@ -368,7 +259,7 @@ function updateUser(oldOrder, detachRec, uNameNow) {
       }
       uploadFile(orderId);
     }
-    // firebase stuff
+
     var fireDB = initFireDb();
     fireDB
       .collection("order")
