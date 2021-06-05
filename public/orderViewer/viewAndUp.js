@@ -5,7 +5,7 @@ import {
   loadForm,
   mediumDiaglog,
 } from "../sharedFunction.js";
-import { getUid, initSession, signOut } from "../sessionManager.js";
+import { getProfile, getUid, initSession, signOut } from "../sessionManager.js";
 $.ajaxSetup({
   cache: false,
 });
@@ -66,7 +66,8 @@ function loadOrders() {
     });
 }
 
-function loadTable(recieveData) {
+async function loadTable(recieveData) {
+  
   var dataTableOption = {
     paging: false,
     info: false,
@@ -79,6 +80,7 @@ function loadTable(recieveData) {
   var numChange = 0;
   var fireDb = initFireDb();
   var uid = getUid();
+  var userProfile=await getProfile(uid);
   var detacher = fireDb
     .collection("order")
     .where("personalDetail.userId", "==", uid)
@@ -102,16 +104,7 @@ function loadTable(recieveData) {
       } else {
         $("#payBut").prop("disabled", true);
       }
-      if (
-        orderStats == "Payment confirmed" ||
-        orderStats == "Producing order" ||
-        orderStats == "Order ready to pickup" ||
-        orderStats == "Order Complete"
-      ) {
-        $("#editBut").prop("disabled", true);
-      } else {
-        $("#editBut").prop("disabled", false);
-      }
+
       if (
         orderStats == "Payment confirmed" ||
         orderStats == "Producing order" ||
@@ -120,8 +113,10 @@ function loadTable(recieveData) {
         orderStats == "Order cancelation requested"
       ) {
         $("#rmBut").prop("disabled", true);
+        $("#editBut").prop("disabled", true);
       } else {
         $("#rmBut").prop("disabled", false);
+        $("#editBut").prop("disabled", false);
       }
 
       $("#viewBut").prop("disabled", false);
@@ -138,15 +133,15 @@ function loadTable(recieveData) {
   });
   $("#editBut").click(function (e) {
     e.preventDefault();
-    loadForm(orderId, "updateUser");
+    loadForm(orderId, "updateUser", detacher);
   });
   $("#rmBut").click(function (e) {
     e.preventDefault();
-    cancelOrder(orderId, detacher);
+    cancelOrder(orderId, detacher,userProfile.name);
   });
 }
 
-function cancelOrder(orderIdGet, detachGot) {
+function cancelOrder(orderIdGet, detachGot,nameUpdate) {
   hideDialogCloseBut();
   $("#messageDialogCloseBut").show();
   mediumDiaglog();
@@ -173,6 +168,7 @@ function cancelOrder(orderIdGet, detachGot) {
               "statusDetail.orderStatus": "Order cancelation requested",
               "statusDetail.orderDateUpdate":
                 firebase.firestore.FieldValue.serverTimestamp(),
+                "statusDetail.lastUserUpdate":nameUpdate
             })
             .then(() => {
               $("#messageContent").append(

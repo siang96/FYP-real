@@ -6,29 +6,38 @@
       class="form-control"
       name="orderDate"
       id="orderDate"
-      required
+      disabled
     />
   </div>
   <div class="form-group col-md-6 mx-auto">
-    <label for="orderDate">Time updated</label>
+    <label for="orderDate">Last Time updated</label>
     <input
       type="datetime-local"
       class="form-control"
       name="orderDateUpdate"
       id="orderDateUpdate"
-      required
+      disabled
     />
   </div>
 </div>
 <div class="row">
-  <div class="form-group col-md-12 mx-auto">
+  <div class="form-group col-md-6 mx-auto">
     <label for="orderEstPrice">Estimated price (RM)</label>
     <input
       type="text"
       class="form-control"
       name="orderEstPrice"
       id="orderEstPrice"
-      required
+    />
+  </div>
+  <div class="form-group col-md-6 mx-auto">
+    <label for="lastUserUpdate">Last Updated By</label>
+    <input
+      type="text"
+      class="form-control"
+      name="lastUserUpdate"
+      id="lastUserUpdate"
+      readonly
     />
   </div>
 </div>
@@ -38,7 +47,7 @@
       <div class="input-group-prepend">
         <label class="input-group-text" for="orderStatus">Order Status</label>
       </div>
-      <select class="custom-select" id="orderStatus" name="orderStatus" required>
+      <select class="custom-select" id="orderStatus" name="orderStatus">
         <option disabled selected value="">Choose...</option>
         <option value="Order placed">Order placed</option>
         <option value="Order confirmed">Order Confirmed</option>
@@ -53,12 +62,8 @@
         <option value="Order cancelation requested">
           Order cancelation requested
         </option>
-        <option value="Order update placed">
-          Order update placed
-        </option>
-        <option value="Order update confirmed">
-          Order update confirmed
-        </option>
+        <option value="Order update placed">Order update placed</option>
+        <option value="Order update confirmed">Order update confirmed</option>
       </select>
     </div>
   </div>
@@ -75,7 +80,6 @@
         class="custom-select"
         id="deisgnServiceStatus"
         name="deisgnServiceStatus"
-        required
       >
         <option disabled selected value="">Choose...</option>
         <option value="Not Requested">Not Requested</option>
@@ -84,7 +88,10 @@
           Waiting for deisgner contact
         </option>
         <option value="Unable to reach contact">Unable to reach contact</option>
+        <option value="Producing Design">Producing Design</option>
         <option value="Design confirmed">Design confirmed</option>
+        <option value="Service canceled">Service canceled</option>
+        <option value="Service completed">Service completed</option>
       </select>
     </div>
   </div>
@@ -95,7 +102,7 @@
       <div class="input-group-prepend">
         <label class="input-group-text" for="paymentstat">Payment Status</label>
       </div>
-      <select class="custom-select" id="paymentstat" name="paymentstat" required>
+      <select class="custom-select" id="paymentstat" name="paymentstat">
         <option disabled selected value="">Choose...</option>
         <option value="Not paid">Not Paid</option>
         <option value="Paid by cash">Paid by cash</option>
@@ -109,6 +116,11 @@
 <div class="row">
   <div class="form-group col-md-12">
     <label for="problem">Problems</label>
-    <textarea class="form-control" name="problems" id="problem" rows="3"></textarea>
+    <textarea
+      class="form-control"
+      name="problems"
+      id="problem"
+      rows="3"
+    ></textarea>
   </div>
 </div>

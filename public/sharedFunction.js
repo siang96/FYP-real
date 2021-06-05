@@ -40,12 +40,14 @@ function mediumDiaglog() {
   }
 }
 
-async function loadForm(orderIdObtained, buttonType) {
+async function loadForm(orderIdObtained, buttonType, updateDetacher) {
   var order = await getOrder(orderIdObtained);
   if (order.statusDetail.deisgnServiceStatus == "Not Requested") {
     var fileRef = order.statusDetail.fileId;
   }
-
+  var uid = getUid();
+  var userProfile = await getProfile(uid);
+  var currUsrName = userProfile.name;
   bigDiaglog();
   $("#messageDialog").modal({ backdrop: "static", keyboard: false });
   $("#messageContent").load(
@@ -55,7 +57,7 @@ async function loadForm(orderIdObtained, buttonType) {
         $("#orderId").val(orderIdObtained);
         $("#formOption").val(order.orderDetail.formOption);
         loadPInfo(order.personalDetail, buttonType);
-        loadOAddInfo(order.orderDetail, buttonType);
+        loadOAddInfo(order.orderDetail, buttonType, order);
         $("#downButArea").hide();
         $("#progressBarArea").hide();
         if (buttonType == "view") {
@@ -79,21 +81,15 @@ async function loadForm(orderIdObtained, buttonType) {
           $("#formOption").prop("disabled", true);
         }
         if (buttonType == "updateStaff") {
-          console.log("update staff called");
           loadOrderStats(order.statusDetail, buttonType);
-          //bind o stats events
-          //bind sumnit
-          //based on users
+          updateStaff(order, updateDetacher, currUsrName);
         }
         if (buttonType == "updateUser") {
-          updateUser(order);
+          updateUser(order, updateDetacher, currUsrName);
         }
       }
     }
   );
-
-  //if (functype) is edit, show orderfile area bind show submit but
-  //=> delete replace file on submit
 }
 
 function bindCommonEvents(selectedFormGet) {
@@ -148,10 +144,6 @@ function bindCommonEvents(selectedFormGet) {
   }
 }
 
-function bindStatsEvent() {
-  //stats event
-}
-
 function bindUpdatesEvent(optionGet) {
   if (optionGet.match(/flyer/gi)) {
     bindDeisgnService();
@@ -162,7 +154,7 @@ function bindUpdatesEvent(optionGet) {
       var material = this.value;
       bindHardEvent(material);
     });
-    $("#orderFile").prop("required", true);
+    $("#orderFile").prop("required", false);
   }
   if (optionGet.match(/bCard/gi)) {
     bindBusinessCard();
@@ -175,15 +167,125 @@ function bindUpdatesEvent(optionGet) {
   }
 }
 
-function updateStaff(params) {}
-
-function updateUser(oldOrder) {
+function updateStaff(oldOrder, detachGot, uNameNow) {
   $("#orderForm").submit(function (e) {
+    detachGot();
     e.preventDefault();
     var theFile = document.getElementById("orderFile").files[0];
     var oldFileRef = oldOrder.statusDetail.fileId;
     var orderId = $("#orderId").val();
-    var formOption = $("#formOption").val();
+    var orderDateUp = new Date();
+    var personalInfoData = $("#personalInfoArea :input").serializeArray();
+    var orderInfoData = $("#orderAddInfoArea :input").serializeArray();
+    var jsonDataUpdate = {};
+    var orderDetail = {};
+    var personalDetail = {};
+    var addDataRaw = $("#orderStatsArea :input").serializeArray();
+    var addData = {};
+
+    orderDetail["formOption"] = $("#formOption").val();
+
+    orderInfoData.forEach((dataField) => {
+      orderDetail[dataField.name] = dataField.value;
+    });
+
+    personalInfoData.forEach((dataField) => {
+      personalDetail[dataField.name] = dataField.value;
+    });
+
+    addDataRaw.forEach((dataField) => {
+      addData[dataField.name] = dataField.value;
+    });
+    addData.orderDateUpdate = orderDateUp;
+    addData.orderStatus = "Order update placed";
+    addData.lastUserUpdate = uNameNow;
+    if (orderDetail.orderDoubleSide != "on") {
+      orderDetail.orderDoubleSide = "off";
+    }
+
+    if (orderDetail.orderDesignService != "on") {
+      if (theFile) {
+        var refFileString = orderId + "/" + theFile.name;
+        addData["fileId"] = refFileString;
+      }
+      if (oldOrder.orderDetail.orderDesignService == "on") {
+        addData.deisgnServiceStatus = "Service canceled";
+      }
+    }
+
+    if (oldOrder.orderDetail.orderDesignService != "on") {
+      if (orderDetail.orderDesignService == "on") {
+        addData.deisgnServiceStatus = "Service requested";
+      }
+    }
+
+    for (const key in orderDetail) {
+      if (Object.hasOwnProperty.call(orderDetail, key)) {
+        const element = orderDetail[key];
+        const updateKey = "orderDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    for (const key in personalDetail) {
+      if (Object.hasOwnProperty.call(personalDetail, key)) {
+        const element = personalDetail[key];
+        const updateKey = "personalDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    for (const key in addData) {
+      if (Object.hasOwnProperty.call(addData, key)) {
+        const element = addData[key];
+        const updateKey = "statusDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    $("#submitButton").prop("disabled", true);
+    $("#orderForm :input").prop("disabled", true);
+
+    console.log(jsonDataUpdate);
+    if (theFile) {
+      //delete file
+      if (oldFileRef) {
+        var removeFielRef = firebase.storage().ref(oldFileRef);
+        removeFielRef
+          .delete()
+          .then(() => {
+            $("#messageContent").append("<br>Old File removed!");
+          })
+          .catch((error) => {
+            console.error("error occur: " + error);
+          });
+      }
+      uploadFile(orderId);
+    }
+    // firebase stuff
+    var fireDB = initFireDb();
+    fireDB
+      .collection("order")
+      .doc(orderId)
+      .update(jsonDataUpdate)
+      .then(() => {
+        $("#messageContent").append(
+          "<br>Update Success!<br> Please Wait for reload"
+        );
+        setTimeout(() => {
+          location.reload();
+        }, 5000);
+      })
+      .catch(() => {
+        console.error("error occur: " + error);
+      });
+  });
+}
+
+function updateUser(oldOrder, detachRec, uNameNow) {
+  $("#orderForm").submit(function (e) {
+    detachRec();
+    e.preventDefault();
+    var theFile = document.getElementById("orderFile").files[0];
+    var oldFileRef = oldOrder.statusDetail.fileId;
+    var orderId = $("#orderId").val();
     var orderDateUp = new Date();
     var personalInfoData = $("#personalInfoArea :input").serializeArray();
     var orderInfoData = $("#orderAddInfoArea :input").serializeArray();
@@ -193,11 +295,8 @@ function updateUser(oldOrder) {
 
     var addData = {
       orderDateUpdate: orderDateUp,
-      orderEstPrice: "",
       orderStatus: "Order update placed",
-      paymentstat: "Not paid",
-      deisgnServiceStatus: "",
-      problem: "",
+      lastUserUpdate: uNameNow,
     };
 
     orderDetail["formOption"] = $("#formOption").val();
@@ -210,26 +309,82 @@ function updateUser(oldOrder) {
       personalDetail[dataField.name] = dataField.value;
     });
 
+    if (orderDetail.orderDoubleSide != "on") {
+      orderDetail.orderDoubleSide = "off";
+    }
+
     if (orderDetail.orderDesignService != "on") {
-      var orderFile = document.getElementById("orderFile").files[0];
-      var refFileString = orderId + "/" + orderFile.name;
-      addData["fileId"] = refFileString;
-      addData.deisgnServiceStatus = "Not Requested";
+      if (theFile) {
+        var refFileString = orderId + "/" + theFile.name;
+        addData["fileId"] = refFileString;
+      }
+      if (oldOrder.orderDetail.orderDesignService == "on") {
+        addData.deisgnServiceStatus = "Service canceled";
+      }
     }
 
-    if (orderDetail.orderDesignService == "on") {
-      addData.deisgnServiceStatus = "Service requested";
+    if (oldOrder.orderDetail.orderDesignService != "on") {
+      if (orderDetail.orderDesignService == "on") {
+        addData.deisgnServiceStatus = "Service requested";
+      }
     }
 
-    jsonDataUpdate.orderDetail = orderDetail;
-    jsonDataUpdate.personalDetail = personalDetail;
-    jsonDataUpdate.statusDetail = addData;
+    for (const key in orderDetail) {
+      if (Object.hasOwnProperty.call(orderDetail, key)) {
+        const element = orderDetail[key];
+        const updateKey = "orderDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    for (const key in personalDetail) {
+      if (Object.hasOwnProperty.call(personalDetail, key)) {
+        const element = personalDetail[key];
+        const updateKey = "personalDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    for (const key in addData) {
+      if (Object.hasOwnProperty.call(addData, key)) {
+        const element = addData[key];
+        const updateKey = "statusDetail." + key;
+        jsonDataUpdate[updateKey] = element;
+      }
+    }
+    $("#submitButton").prop("disabled", true);
+    $("#orderForm :input").prop("disabled", true);
 
-    console.log(jsonDataUpdate);
     if (theFile) {
       //delete file
-      console.log("delete file");
+      if (oldFileRef) {
+        var removeFielRef = firebase.storage().ref(oldFileRef);
+        removeFielRef
+          .delete()
+          .then(() => {
+            $("#messageContent").append("<br>Old File removed!");
+          })
+          .catch((error) => {
+            console.error("error occur: " + error);
+          });
+      }
+      uploadFile(orderId);
     }
+    // firebase stuff
+    var fireDB = initFireDb();
+    fireDB
+      .collection("order")
+      .doc(orderId)
+      .update(jsonDataUpdate)
+      .then(() => {
+        $("#messageContent").append(
+          "<br>Update Success!<br> Please Wait for reload"
+        );
+        setTimeout(() => {
+          location.reload();
+        }, 5000);
+      })
+      .catch(() => {
+        console.error("error occur: " + error);
+      });
   });
 }
 
@@ -264,7 +419,7 @@ function loadPInfo(pDetailRecieve, buttonCaller) {
   );
 }
 
-function loadOAddInfo(detailRecieve, callerTypeGet) {
+function loadOAddInfo(detailRecieve, callerTypeGet, data) {
   var selectedForm = detailRecieve.formOption;
   if (selectedForm.match(/Flyers/gi)) {
     $("#orderAddInfoArea").load(
@@ -272,7 +427,7 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       function (response, status, xhr) {
         if (status == "success") {
           setDataEvent(detailRecieve, "flyer", callerTypeGet);
-          fieldDisabler(callerTypeGet);
+          fieldDisabler(callerTypeGet, data, "flyer");
         }
       }
     );
@@ -283,7 +438,7 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       function (response, status, xhr) {
         if (status == "success") {
           setDataEvent(detailRecieve, "hard", callerTypeGet);
-          fieldDisabler(callerTypeGet);
+          fieldDisabler(callerTypeGet, data, "hard");
         }
       }
     );
@@ -294,7 +449,7 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       function (response, status, xhr) {
         if (status == "success") {
           setDataEvent(detailRecieve, "bcard", callerTypeGet);
-          fieldDisabler(callerTypeGet);
+          fieldDisabler(callerTypeGet, data, "bcard");
         }
       }
     );
@@ -305,17 +460,31 @@ function loadOAddInfo(detailRecieve, callerTypeGet) {
       function (response, status, xhr) {
         if (status == "success") {
           setDataEvent(detailRecieve, "bunting", callerTypeGet);
-          fieldDisabler(callerTypeGet);
+          fieldDisabler(callerTypeGet, data, "bunting");
         }
       }
     );
   }
 }
 
-function fieldDisabler(caller) {
+function fieldDisabler(caller, orderDataGot, formGot) {
   if (caller == "view") {
     $("#orderFileArea").hide();
     $("#orderAddInfoArea :input").prop("disabled", true);
+  }
+  if (caller == "updateUser") {
+    if (formGot == "bunting" || formGot == "bcard" || formGot == "flyer") {
+      if (
+        orderDataGot.statusDetail.deisgnServiceStatus == "Design confirmed" ||
+        orderDataGot.statusDetail.deisgnServiceStatus == "Producing Design" ||
+        orderDataGot.statusDetail.deisgnServiceStatus == "Service completed"
+      ) {
+        if (orderDataGot.orderDetail.orderDesignService == "on") {
+          $("#orderDesignService").prop("disabled", true);
+          $("#orderFileArea").hide();
+        }
+      }
+    }
   }
 }
 
@@ -340,7 +509,6 @@ function setDataEvent(data, formType, caller) {
     $("#orderContactMail").val(data.orderContactMail);
     $("#orderQuantity").val(data.orderQuantity);
   }
-
   if (formType == "flyer") {
     $("#orderPaperType").val(data.orderPaperType);
     $("#orderPaperSize").val(data.orderPaperSize);
@@ -371,6 +539,7 @@ function setDataEvent(data, formType, caller) {
       $("#orderDateUpdate").val(toIsoString(data.orderDateUpdate.toDate()));
     }
     $("#orderEstPrice").val(data.orderEstPrice);
+    $("#lastUserUpdate").val(data.lastUserUpdate);
     $("#paymentstat").val(data.paymentstat);
     if (data.problem == "") {
       $("#problem").val("No problems");
@@ -472,6 +641,7 @@ async function getOrder(oid) {
 }
 
 function uploadFile(orderIdGot) {
+  $("#progressBarArea").show();
   var theFile = document.getElementById("orderFile").files[0];
   var refString = orderIdGot + "/" + theFile.name;
   var storeRef = firebase.storage().ref(refString);

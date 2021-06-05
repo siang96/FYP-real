@@ -104,7 +104,7 @@ function loadTable(recieveData) {
   });
   $("#editBut").click(function (e) {
     e.preventDefault();
-    loadForm(orderId, "updateStaff");
+    loadForm(orderId, "updateStaff",detacher);
   });
   $("#rmBut").click(function (e) {
     e.preventDefault();

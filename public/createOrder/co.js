@@ -96,7 +96,6 @@ function main() {
       .then(function () {
         if (orderDetail.orderDesignService != "on") {
           uploadFile(orderId);
-          $("#progressBarArea").show();
         } else {
           $("#messageContent").html(
             "Success!<br>Your order id " +
