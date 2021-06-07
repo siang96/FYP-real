@@ -65,59 +65,66 @@
 
     <div class="container">
       <div class="content">
-        <div class="row mx-auto mt-4">
+        
           <div class="title">Your account details</div>
-          <form
-            class="mt-4 w-100"
-            id="login-form"
-            action="php\login.php"
-            method="post"
-          >
-            <div class="from-group mx-auto">
+          <form class="mt-4 w-100" id="updateForm">
+            <div class="from-group col-md-8 mx-auto">
               <label for="username">Name</label>
               <input
+                id="usrName"
                 type="text"
                 class="form-control"
-                name="usrName"
-                value="sometext"
-                disabled
+                name="usrName" 
+                required               
               />
             </div>
-            <div class="from-group mx-auto mt-4">
-              <label for="username">Contact number</label>
+            <div class="from-group col-md-8 mx-auto mt-4">
+              <label for="ContactNum">Contact number (numbers only)</label>
               <input
-                type="number"
+                id="usrContactNum"
+                type="tel"
                 class="form-control"
-                name="usrName"
-                value="23456"
-                disabled
+                name="usrContactNum"                
+                pattern="\d+"
+                required
               />
             </div>
-            <div class="from-group mx-auto mt-4">
-              <label for="username">Username</label>
+            <div class="from-group col-md-8 mx-auto mt-4">
+              <label for="email">Email</label>
               <input
-                type="text"
+                id="usrEmail"
+                type="email"
                 class="form-control"
-                name="usrName"
-                value="sometext"
-                disabled
+                name="usrEmail"  
+                required              
               />
             </div>
+            <div class="from-group col-md-8 mx-auto mt-4">
+              <label for="password">New password</label>
+              <input
+                id="usrPw"
+                type="password"
+                class="form-control"
+                name="usrPw"
+                minlength="6"                
+              />
+            </div>
+            <div class="from-group col-md-8 mx-auto mt-4">
+              <label for="confirmPassword">Confirm new password</label>
+              <input
+                id="usrConfirmPw"
+                type="password"
+                class="form-control"
+                name="usrConfirmPw"                
+              />
+            </div><div class="form-group col-md-8 mx-auto mt-5">
+            <button type="submit" class="btn btn-primary mt-4 btn-block">Update</button>
+          </div>
+          <div class="form-group col-md-8 mx-auto">
+            <button type="reset" class="btn btn-primary mt-4 btn-block">Reset</button>
+          </div>
           </form>
-          <button
-            type="button"
-            class="btn btn-primary mt-4 btn-block"
-            id="editBut"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary mt-4 btn-block"
-            id="rmBut"
-          >
-            Cancel
-          </button>
+          
         </div>
         <div class="modal fade" id="messageDialog" tabindex="-1" role="dialog">
           <div class="modal-dialog modal-dialog-centered" role="document">

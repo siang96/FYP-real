@@ -6,7 +6,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
-    <link rel="stylesheet" href="../assets/frameworks/bootstrap/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../assets/frameworks/bootstrap/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="../main.css" />
     <script type="module" src="reg.js"></script>
     <meta charset="utf-8" />
@@ -46,29 +49,65 @@
         <form class="mt-4" id="reg-form">
           <div class="from-group col-md-8 mx-auto">
             <label for="username">Name</label>
-            <input id="usrName" type="text" class="form-control" name="usrName" required />
+            <input
+              id="usrName"
+              type="text"
+              class="form-control"
+              name="usrName"
+              required
+            />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="ContactNum">Contact number (numbers only)</label>
-            <input id="usrContactNum" type="tel" class="form-control" name="usrContactNum" required pattern="\d+"/>
+            <input
+              id="usrContactNum"
+              type="tel"
+              class="form-control"
+              name="usrContactNum"
+              required
+              pattern="\d+"
+            />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="email">Email</label>
-            <input id="usrEmail" type="email" class="form-control" name="usrEmail" required />
+            <input
+              id="usrEmail"
+              type="email"
+              class="form-control"
+              name="usrEmail"
+              required
+            />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="password">Password</label>
-            <input id="usrPw" type="password" class="form-control" name="usrPw" minlength="6" required />
+            <input
+              id="usrPw"
+              type="password"
+              class="form-control"
+              name="usrPw"
+              minlength="6"
+              required
+            />
           </div>
           <div class="from-group col-md-8 mx-auto mt-4">
             <label for="confirmPassword">Confirm Password</label>
-            <input id="usrConfirmPw" type="password" class="form-control" name="usrConfirmPw" required />
+            <input
+              id="usrConfirmPw"
+              type="password"
+              class="form-control"
+              name="usrConfirmPw"
+              required
+            />
           </div>
           <div class="form-group col-md-8 mx-auto mt-5">
-            <button type="submit" class="btn btn-primary mt-4 btn-block">Register</button>
+            <button type="submit" class="btn btn-primary mt-4 btn-block">
+              Register
+            </button>
           </div>
           <div class="form-group col-md-8 mx-auto">
-            <button type="reset" class="btn btn-primary mt-4 btn-block">Reset</button>
+            <button type="reset" class="btn btn-primary mt-4 btn-block">
+              Reset
+            </button>
           </div>
         </form>
 
@@ -77,13 +116,25 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="messageTitle">Message</h5>
-                <button id="messageDialogCloseBut" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button
+                  id="messageDialogCloseBut"
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body" id="messageContent"></div>
               <div class="modal-footer" id="messageDialogFooter">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>

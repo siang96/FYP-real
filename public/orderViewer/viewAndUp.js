@@ -178,7 +178,7 @@ function cancelOrder(orderIdGet, detachGot,nameUpdate) {
                 location.reload();
               }, 2000);
             })
-            .catch(() => {
+            .catch((error) => {
               console.error("error occur: " + error);
             });
         });

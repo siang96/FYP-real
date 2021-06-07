@@ -592,7 +592,33 @@ async function fillPersonalInfo() {
   $("#orderContactNum").val(userProfile.contactNum);
 }
 
+function forgotPw() {
+  $("#messageTitle").html("Forgot password");
+  $("#messageContent").load(
+    "../assets/html/forgotPw.html",
+    function (response, status, request) {
+      if (status == "success") {
+        $("#forgotForm").submit(function (e) {
+          $("#submitButton").prop("disabled", true);
+          $("#forgotForm :input").prop("disabled", true);
+          e.preventDefault();
+          var emailReset = $("#forgotEmail").val();
+          var auth = firebase.auth();
+          auth
+            .sendPasswordResetEmail(emailReset)
+            .then(()=> $("#messageContent").append("<br>Reset email sent<br>Please close this dialog"))
+            .catch((error)=> {
+              $("#messageContent").append(error.message+"<br>Please close this dialog");
+              console.error("update auth email error " + error);
+            });
+        });
+      }
+    }
+  );
+}
+
 export {
+  forgotPw,
   fillPersonalInfo,
   bindCommonEvents,
   revertQtyText,

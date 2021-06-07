@@ -1,5 +1,9 @@
-import { hideDialogCloseBut, initFire, showDialogCloseBut } from "./sharedFunction.js";
+import { forgotPw, hideDialogCloseBut, initFire, showDialogCloseBut } from "./sharedFunction.js";
 import { initSession } from "./sessionManager.js";
+$.ajaxSetup({
+  cache: false,
+});
+
 $(document).ready(function () {
   initFire();
   initSession();
@@ -9,6 +13,7 @@ $(document).ready(function () {
 function mainFunc() {
   var uEmail, uPw;
   $("#login-form").submit(function (event) {
+    $("#messageTitle").html("Message");
     hideDialogCloseBut();
     $("#messageDialog").modal({ backdrop: "static", keyboard: false });
     $("#messageContent").html("Logging in");
@@ -30,5 +35,11 @@ function mainFunc() {
           "login error code " + error.code + " \nmessage:" + error.message
         );
       });
+  });
+  $("#forgotPw").click(function (e) { 
+    e.preventDefault();
+    $("#messageDialog").modal({ backdrop: "static", keyboard: false });
+    forgotPw();
+    $("#messageDialogCloseBut").show();
   });
 }

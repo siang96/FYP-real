@@ -112,6 +112,7 @@ function redirector(uProfile) {
 }
 
 function signOut() {
+  $("#messageTitle").html("Logout");
   mediumDiaglog();
   firebase
     .auth()
