@@ -110,7 +110,6 @@ function loadTable(recieveData) {
     e.preventDefault();
     removeOrder(orderId, detacher);
   });
-  //bind event
 }
 
 function removeOrder(idGet, detacherGot) {

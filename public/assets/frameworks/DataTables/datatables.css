@@ -4,10 +4,10 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#bs4/dt-1.10.23/r-2.2.7/sl-1.3.1
+ *   https://datatables.net/download/#bs4/dt-1.10.25/r-2.2.8/sl-1.3.3
  *
  * Included libraries:
- *   DataTables 1.10.23, Responsive 2.2.7, Select 1.3.1
+ *   DataTables 1.10.25, Responsive 2.2.8, Select 1.3.3
  */
 
 @charset "UTF-8";
@@ -408,11 +408,6 @@ div.dtr-bs-modal table.table tr:first-child td {
   border-top: none;
 }
 
-table.dataTable.dtr-inline.collapsed.table-sm > tbody > tr > td:first-child:before,
-table.dataTable.dtr-inline.collapsed.table-sm > tbody > tr > th:first-child:before {
-  top: 5px;
-}
-
 
 table.dataTable tbody > tr.selected,
 table.dataTable tbody > tr > .selected {
@@ -492,19 +487,28 @@ table.dataTable tbody th.select-checkbox:after {
 }
 table.dataTable tbody td.select-checkbox:before,
 table.dataTable tbody th.select-checkbox:before {
-  content: ' ';
-  margin-top: -6px;
+  content: " ";
+  margin-top: -2px;
   margin-left: -6px;
   border: 1px solid black;
   border-radius: 3px;
 }
 table.dataTable tr.selected td.select-checkbox:after,
 table.dataTable tr.selected th.select-checkbox:after {
-  content: '\2714';
-  margin-top: -11px;
-  margin-left: -4px;
+  content: "✓";
+  font-size: 20px;
+  margin-top: -19px;
+  margin-left: -6px;
   text-align: center;
   text-shadow: 1px 1px #B0BED9, -1px -1px #B0BED9, 1px -1px #B0BED9, -1px 1px #B0BED9;
+}
+table.dataTable.compact tbody td.select-checkbox:before,
+table.dataTable.compact tbody th.select-checkbox:before {
+  margin-top: -12px;
+}
+table.dataTable.compact tr.selected td.select-checkbox:after,
+table.dataTable.compact tr.selected th.select-checkbox:after {
+  margin-top: -16px;
 }
 
 div.dataTables_wrapper span.select-info,
@@ -514,7 +518,7 @@ div.dataTables_wrapper span.select-item {
 
 @media screen and (max-width: 640px) {
   div.dataTables_wrapper span.select-info,
-  div.dataTables_wrapper span.select-item {
+div.dataTables_wrapper span.select-item {
     margin-left: 0;
     display: block;
   }
