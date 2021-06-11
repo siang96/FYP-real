@@ -1,4 +1,4 @@
-import { initFire, initFireDb,loadForm } from "../sharedFunction.js";
+import { initFire, initFireDb, loadForm } from "../sharedFunction.js";
 import { initSession } from "../sessionManager.js";
 
 var refTable;
@@ -13,6 +13,7 @@ function mainFunc() {
   var generateTimes = 0;
   var today = new Date().toISOString().split("T")[0];
   $("#maxDate").attr("max", today);
+  $("#minDate").attr("max", today);
   $("#resultRow").hide();
   $("#dateForm").submit(function (e) {
     e.preventDefault();
@@ -35,6 +36,14 @@ function genereateRept(timegenerated) {
     .where("statusDetail.orderDate", "<=", endDate)
     .get()
     .then((querySnapshot) => {
+      var tSales = 0,
+        tCSales = 0,
+        tOrder = 0,
+        tComplete = 0,
+        tFlyerOrder = 0,
+        tHardOrder = 0,
+        tBCardOder = 0,
+        tBannerOrder = 0;
       querySnapshot.forEach((doc) => {
         var rawData = doc.data();
         var docId = doc.id;
@@ -54,13 +63,40 @@ function genereateRept(timegenerated) {
           dateUpdate,
         ];
         generatedData.push(objCreated);
-        //add counters
+        if (rawData.statusDetail.orderEstPrice != "") {
+          tSales = +tSales + +rawData.statusDetail.orderEstPrice;
+        }
+        tOrder++;
+        if (rawData.statusDetail.orderStatus == "Order Complete") {
+          tComplete++;
+          tCSales = +tSales + +rawData.statusDetail.orderEstPrice;
+        }
+        if (rawData.orderDetail.formOption == "Flyers") {
+          tFlyerOrder++;
+        }
+        if (rawData.orderDetail.formOption == "Hardcover") {
+          tHardOrder++;
+        }
+        if (rawData.orderDetail.formOption == "Business Card") {
+          tBCardOder++;
+        }
+        if (rawData.orderDetail.formOption == "Banner") {
+          tBannerOrder++;
+        }
       });
       if (timegenerated == 0) {
         refTable = loadResult(generatedData);
       } else {
         loadNewData(generatedData);
       }
+      $("#tCompleteArea").text(tComplete);
+      $("#tOrderArea").text(tOrder);
+      $("#tFlyerArea").text(tFlyerOrder);
+      $("#tHardArea").text(tHardOrder);
+      $("#tBCardArea").text(tBCardOder);
+      $("#tBannerArea").text(tBannerOrder);
+      $("#tSalesArea").text(tSales);
+      $("#tCSalesArea").text(tCSales);
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
@@ -95,6 +131,6 @@ function loadResult(resultArray) {
 
 function loadNewData(newData) {
   refTable.clear().draw();
-  refTable.rows.add(newData); // Add new data
+  refTable.rows.add(newData);
   refTable.columns.adjust().draw();
 }

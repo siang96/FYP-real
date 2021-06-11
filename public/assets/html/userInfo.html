@@ -1,0 +1,74 @@
+<form class="mt-4 col-md-12 mx-auto" id="userForm">
+  <div class="row">
+    <div class="form-group col-md-6 mx-auto">
+      <label for="userName">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="userName"
+        id="userName"
+        required
+      />
+    </div>
+    <div class="form-group col-md-6 mx-auto">
+      <label for="userContactNum">Contact Number (numbers only)</label>
+      <input
+        type="tel"
+        pattern="\d+"
+        class="form-control"
+        name="userContactNum"
+        id="userContactNum"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-6 mx-auto">
+      <label for="userContactMail">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        name="userContactMail"
+        id="userContactMail"
+        required
+      />
+    </div>
+    <div class="form-group col-md-6 mx-auto">
+      <label for="userType">Select a user type...</label>
+      <select class="form-control" name="userType" id="userType">
+        <option disabled selected value="">Choose...</option>
+        <option value="cust">Customer</option>
+        <option value="admin">Admin</option>
+        <option value="staff">Staff</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-6 mx-auto">
+      <label for="usrPw">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        name="usrPw"
+        id="usrPw"
+        minlength="6"
+      />
+    </div>
+    <div class="form-group col-md-6 mx-auto">
+      <label for="usrConfirmPw">Confirm Password</label>
+      <input
+        type="password"
+        class="form-control"
+        name="usrConfirmPw"
+        id="usrConfirmPw"
+        minlength="6"
+      />
+    </div>
+  </div>
+  <div class="form-group d-flex justify-content-end mx-auto">
+    <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+      Submit
+    </button>
+  </div>
+</form>

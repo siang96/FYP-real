@@ -93,38 +93,48 @@
           </div>
         </form>
         <div class="col-md-10 mx-auto mt-4" id="resultRow">
-          
-            <div class="row">
-              <table id="dataTable" class="table">
-                <thead>
-                  <tr>
-                    <th>Order id</th>
-                    <th>Status</th>
-                    <th>Estimated price (RM)</th>
-                    <th>Payment status</th>
-                    <th>Deisgn service status</th>
-                    <th>Order type</th>
-                    <th>Last updated</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-
-            <div class="row mt-4">
-              <button
-                type="button"
-                class="btn btn-primary col-lg-2 ml-auto"
-                id="viewBut"
-                disabled
-              >
-                View
-              </button>
-            </div>
-          
           <div class="row mt-4">
-            counters total est sales total num order complete count order type
-            count total order
+           <div class="col-md-6"><h4>Total completed orders <span id="tCompleteArea"></span></h4></div>
+           <div class="col-md-6"><h4>Total orders <span id="tOrderArea"></span></h4></div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-6"><h4>Total flyer orders <span id="tFlyerArea"></span></h4></div>
+            <div class="col-md-6"><h4>Total hardcover orders <span id="tHardArea"></span></h4></div>
+           </div>
+           <div class="row mt-4">
+            <div class="col-md-6"><h4>Total business card order <span id="tBCardArea"></span></h4></div>
+            <div class="col-md-6"><h4>Total banner or bunitng order <span id="tBannerArea"></span></h4></div>
+           </div>
+           <div class="row mt-4">
+            <div class="col-md-6"><h4>Total estimated earning from all order RM<span id="tSalesArea"></span></h4></div>
+            <div class="col-md-6"><h4>Total estimated earning from completed order RM<span id="tCSalesArea"></span></h4></div>
+           </div>
+          <div class="row mt-4">
+            <table id="dataTable" class="table">
+              <thead>
+                <tr>
+                  <th>Order id</th>
+                  <th>Status</th>
+                  <th>Estimated price (RM)</th>
+                  <th>Payment status</th>
+                  <th>Deisgn service status</th>
+                  <th>Order type</th>
+                  <th>Last updated</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="row mt-4">
+            <button
+              type="button"
+              class="btn btn-primary col-lg-2 ml-auto"
+              id="viewBut"
+              disabled
+            >
+              View
+            </button>
           </div>
         </div>
         <div class="modal fade" id="messageDialog" tabindex="-1" role="dialog">

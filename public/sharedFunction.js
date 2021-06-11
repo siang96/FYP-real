@@ -21,7 +21,8 @@ function initFire() {
     messagingSenderId: "444178708470",
     appId: "1:444178708470:web:777d2c0bf38e6b84a1b9d7",
   };
-  firebase.initializeApp(firebaseConfig);
+  var configInit=firebase.initializeApp(firebaseConfig);
+  return configInit;
 }
 
 function initFireDb() {
@@ -593,6 +594,7 @@ async function fillPersonalInfo() {
 }
 
 function forgotPw() {
+  $("#messageDialogFooter").hide();
   $("#messageTitle").html("Forgot password");
   $("#messageContent").load(
     "../assets/html/forgotPw.html",
@@ -618,6 +620,7 @@ function forgotPw() {
 }
 
 export {
+  bigDiaglog,
   forgotPw,
   fillPersonalInfo,
   bindCommonEvents,
