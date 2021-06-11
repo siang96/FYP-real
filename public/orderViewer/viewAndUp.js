@@ -9,11 +9,12 @@ import { getProfile, getUid, initSession, signOut } from "../sessionManager.js";
 $.ajaxSetup({
   cache: false,
 });
+var callableFunc;
 
 $(document).ready(function () {
-  initFire();
+  var initconfig=initFire();
+  callableFunc = initconfig.functions("asia-southeast2");
   initSession();
-
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       main();
@@ -67,7 +68,6 @@ function loadOrders() {
 }
 
 async function loadTable(recieveData) {
-  
   var dataTableOption = {
     paging: false,
     info: false,
@@ -80,7 +80,8 @@ async function loadTable(recieveData) {
   var numChange = 0;
   var fireDb = initFireDb();
   var uid = getUid();
-  var userProfile=await getProfile(uid);
+  var userProfile = await getProfile(uid);
+  var estPrice;
   var detacher = fireDb
     .collection("order")
     .where("personalDetail.userId", "==", uid)
@@ -95,13 +96,15 @@ async function loadTable(recieveData) {
   theTable
     .on("select", function (e, dt, type, indexes) {
       var tableData = theTable.row(indexes).data();
-      var estPrice = tableData[2];
+      estPrice = tableData[2];
       var orderStats = tableData[1];
+      var payStat = tableData[3];
       orderId = tableData[0];
 
       if (estPrice != "") {
         $("#payBut").prop("disabled", false);
-      } else {
+      }
+      if (payStat == "Paid by cash" || payStat == "Paid online success") {
         $("#payBut").prop("disabled", true);
       }
 
@@ -137,11 +140,28 @@ async function loadTable(recieveData) {
   });
   $("#rmBut").click(function (e) {
     e.preventDefault();
-    cancelOrder(orderId, detacher,userProfile.name);
+    cancelOrder(orderId, detacher, userProfile.name);
+  });
+  $("#payBut").click(function (e) {
+    e.preventDefault();
+    triggerPay(orderId, uid, estPrice);
   });
 }
 
-function cancelOrder(orderIdGet, detachGot,nameUpdate) {
+function triggerPay(orderId, uIdGet, estPriceGet) {
+  var stripeInit=Stripe('pk_test_FFUgqHiXDUSvcGvrqwEL8Iwb');
+  var sendStuff = {};
+  sendStuff.oid = orderId;
+  sendStuff.uid = uIdGet;
+  sendStuff.price = estPriceGet;
+  var fireStripe=callableFunc.httpsCallable("payNow");
+  fireStripe(sendStuff).then((resp)=>{
+    var sId=resp.data.sessionId;
+    stripeInit.redirectToCheckout({sessionId:sId});
+  });
+}
+
+function cancelOrder(orderIdGet, detachGot, nameUpdate) {
   hideDialogCloseBut();
   $("#messageDialogCloseBut").show();
   mediumDiaglog();
@@ -168,7 +188,7 @@ function cancelOrder(orderIdGet, detachGot,nameUpdate) {
               "statusDetail.orderStatus": "Order cancelation requested",
               "statusDetail.orderDateUpdate":
                 firebase.firestore.FieldValue.serverTimestamp(),
-                "statusDetail.lastUserUpdate":nameUpdate
+              "statusDetail.lastUserUpdate": nameUpdate,
             })
             .then(() => {
               $("#messageContent").append(

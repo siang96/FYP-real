@@ -1,6 +1,5 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const { user } = require("firebase-functions/lib/providers/auth");
 admin.initializeApp();
 
 exports.removeUser = functions
@@ -11,7 +10,7 @@ exports.removeUser = functions
       throw new functions.https.HttpsError(
         "invalid-argument",
         "The function must be called with " +
-          'one arguments "text" containing the message text to add.'
+          'one arguments "text" containing the message text to remove.'
       );
     }
     if (!context.auth) {
@@ -70,7 +69,7 @@ exports.newUser = functions
       throw new functions.https.HttpsError(
         "invalid-argument",
         "The function must be called with " +
-          'one arguments "object" containing the user data to update.'
+          'one arguments "object" containing the user data to add.'
       );
     }
     if (!context.auth) {
@@ -84,11 +83,52 @@ exports.newUser = functions
     newData.password = data.password;
     return admin
       .auth()
-      .createUser(newData) //new user
+      .createUser(newData)
       .then((userData) => {
-        return { stats: "success",userId:userData.uid };
+        return { stats: "success", userId: userData.uid };
       })
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
+  });
+
+exports.payNow = functions
+  .region("asia-southeast2")
+  .https.onCall(async (data, context) => {
+    const stripe = require("stripe")("sk_test_1LmGZzIO3TPQ7ECmDh1WLoKd");
+    if (!(typeof data === "object")) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "The function must be called with " +
+          'one arguments "object" containing the order data to pay.'
+      );
+    }
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "The function must be called " + "while authenticated."
+      );
+    }
+    var oid = data.oid;
+    var uid = data.uid;
+    var price = data.price;
+    paySession = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          quantity:1,
+          price_data: {
+            currency:"myr",
+            unit_amount:(price)*100,
+            product_data:{
+              name:"Payment for order id: "+oid+" by user: "+uid
+            }
+          },
+        },
+      ],
+      mode: "payment",
+      success_url: "https://psmis-webapp.web.app/paymentsProcess?oid="+oid+"&stats=success",
+      cancel_url: "https://psmis-webapp.web.app/paymentsProcess?oid="+oid+"&stats=failed",
+    });
+    return { sessionId: paySession.id };
   });

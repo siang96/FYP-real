@@ -21,7 +21,7 @@ function initFire() {
     messagingSenderId: "444178708470",
     appId: "1:444178708470:web:777d2c0bf38e6b84a1b9d7",
   };
-  var configInit=firebase.initializeApp(firebaseConfig);
+  var configInit = firebase.initializeApp(firebaseConfig);
   return configInit;
 }
 
@@ -58,11 +58,11 @@ async function loadForm(orderIdObtained, buttonType, updateDetacher) {
         loadOAddInfo(order.orderDetail, buttonType, order);
         $("#downButArea").hide();
         $("#progressBarArea").hide();
+        $("#formOption").prop("disabled", true);
         if (buttonType == "view") {
           loadOrderStats(order.statusDetail, buttonType);
           showDialogCloseBut();
           $("#messageTitle").html("View Order");
-          $("#formOption").prop("disabled", true);
           $("#submitButton").hide();
           if (order.statusDetail.fileId) {
             $("#downButArea").show();
@@ -76,7 +76,6 @@ async function loadForm(orderIdObtained, buttonType, updateDetacher) {
           $("#messageTitle").html("Update Order");
           $("#messageDialogFooter").hide();
           $("#messageDialogCloseBut").show();
-          $("#formOption").prop("disabled", true);
         }
         if (buttonType == "updateStaff") {
           loadOrderStats(order.statusDetail, buttonType);
@@ -167,6 +166,7 @@ function bindUpdatesEvent(optionGet) {
 
 function mergeupdate(oldOrder, detachGot, uNameNow, caller) {
   $("#orderForm").submit(function (e) {
+    $("#messageDialogCloseBut").hide();
     detachGot();
     e.preventDefault();
     var theFile = document.getElementById("orderFile").files[0];
@@ -190,6 +190,10 @@ function mergeupdate(oldOrder, detachGot, uNameNow, caller) {
       addDataRaw.forEach((dataField) => {
         addData[dataField.name] = dataField.value;
       });
+      if($("#paymentstat").val()=="Paid by cash"){
+        var tDay=new Date();
+        addData.payDate=tDay;
+      }
     }
 
     orderDetail["formOption"] = $("#formOption").val();
@@ -424,6 +428,9 @@ function setDataEvent(data, formType, caller) {
     }
   }
   if (formType == "oStats") {
+    if (data.payDate) {
+      $("#payDate").val(toIsoString(data.payDate.toDate()));
+    }
     $("#orderStatus").val(data.orderStatus);
     $("#deisgnServiceStatus").val(data.deisgnServiceStatus);
     $("#orderDate").val(toIsoString(data.orderDate.toDate()));
@@ -608,9 +615,15 @@ function forgotPw() {
           var auth = firebase.auth();
           auth
             .sendPasswordResetEmail(emailReset)
-            .then(()=> $("#messageContent").append("<br>Reset email sent<br>Please close this dialog"))
-            .catch((error)=> {
-              $("#messageContent").append(error.message+"<br>Please close this dialog");
+            .then(() =>
+              $("#messageContent").append(
+                "<br>Reset email sent<br>Please close this dialog"
+              )
+            )
+            .catch((error) => {
+              $("#messageContent").append(
+                error.message + "<br>Please close this dialog"
+              );
               console.error("update auth email error " + error);
             });
         });

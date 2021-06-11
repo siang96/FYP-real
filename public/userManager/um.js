@@ -93,7 +93,7 @@ function loadTable(usrDataGet) {
     });
   $("#newBut").click(function (e) {
     e.preventDefault();
-    loadSetUsrForm("new", detacher,usrData);
+    loadSetUsrForm("new", detacher, usrData);
   });
   $("#editBut").click(function (e) {
     e.preventDefault();
@@ -191,12 +191,27 @@ function rmUsr(detacher, usrDataGot) {
                 .doc(uid)
                 .delete()
                 .then(() => {
-                  $("#messageContent").append(
-                    "<br>User record removed! <br> Please Wait for reload"
-                  );
-                  setTimeout(() => {
-                    location.reload();
-                  }, 2000);
+                  fireDB
+                    .collection("order")
+                    .where("personalDetail.userId", "==", uid)
+                    .get()
+                    .then((queryResult) => {
+                      var batchDoc = fireDB.batch();
+                      queryResult.forEach((doc) => {
+                        batchDoc.delete(doc.ref);
+                      });
+                      batchDoc.commit().then(() => {
+                        $("#messageContent").append(
+                          "<br>User record removed! <br> Please Wait for reload"
+                        );
+                        setTimeout(() => {
+                          location.reload();
+                        }, 2000);
+                      });
+                    })
+                    .catch((error) => {
+                      console.log("Error getting documents: ", error);
+                    });
                 })
                 .catch((error) => {
                   console.error("error occur: " + error);
@@ -227,7 +242,6 @@ function loadSetUsrForm(caller, detacher, usrDataGot) {
           $("#messageTitle").html("New user");
           $("#usrPw").prop("required", true);
           $("#usrConfirmPw").prop("required", true);
-          //submit call api detacher
         }
         if (caller == "edit") {
           $("#messageTitle").html("Edit user");
@@ -246,8 +260,8 @@ function loadSetUsrForm(caller, detacher, usrDataGot) {
           if (caller == "edit") {
             updateUsr(usrDataGot);
           }
-          if(caller="new"){
-              newUsr(usrDataGot);
+          if ((caller = "new")) {
+            newUsr(usrDataGot);
           }
         });
       }

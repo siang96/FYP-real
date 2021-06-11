@@ -24,11 +24,13 @@ function initSession() {
           redirector(profileGot);
         }, 800);
       } else {
-        accessRedirector(profileGot);
-        profileSetter(profileGot);
-        setTimeout(() => {
-          $("#messageDialog").modal("hide");
-        }, 1000);
+        if (!currPage.match(/paymentsProcess/gi)) {
+          accessRedirector(profileGot);
+          profileSetter(profileGot);
+          setTimeout(() => {
+            $("#messageDialog").modal("hide");
+          }, 1000);
+        }
       }
     } else {
       if (
