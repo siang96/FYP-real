@@ -7,7 +7,7 @@ import {
   fillPersonalInfo,
 } from "../sharedFunction.js";
 import { customAlphabet } from "../assets/frameworks/nanoid.js";
-import { getUid, initSession } from "../sessionManager.js";
+import { getUid, initSession,signOut } from "../sessionManager.js";
 
 $.ajaxSetup({
   cache: false,
@@ -25,6 +25,10 @@ $(document).ready(function () {
 });
 
 function main() {
+  $("#logoutButton").click(function (e) {
+    e.preventDefault();
+    signOut();
+  });
   $("#progressBarArea").hide();
   $("#submitButton").hide();
   $("#formOption").on("change", function () {

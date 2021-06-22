@@ -1,5 +1,5 @@
 import { initFire, initFireDb, loadForm } from "../sharedFunction.js";
-import { initSession } from "../sessionManager.js";
+import { initSession,signOut } from "../sessionManager.js";
 
 var refTable;
 
@@ -10,6 +10,10 @@ $(document).ready(function () {
 });
 
 function mainFunc() {
+  $("#logoutButton").click(function (e) {
+    e.preventDefault();
+    signOut();
+  });
   var generateTimes = 0;
   var today = new Date().toISOString().split("T")[0];
   $("#maxDate").attr("max", today);
@@ -69,7 +73,7 @@ function genereateRept(timegenerated) {
         tOrder++;
         if (rawData.statusDetail.orderStatus == "Order Complete") {
           tComplete++;
-          tCSales = +tSales + +rawData.statusDetail.orderEstPrice;
+          tCSales = +tCSales + +rawData.statusDetail.orderEstPrice;
         }
         if (rawData.orderDetail.formOption == "Flyers") {
           tFlyerOrder++;
